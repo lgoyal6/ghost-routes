@@ -247,6 +247,32 @@ def bundle_synthetic(out: Path = typer.Option(..., "--out", "-o"), case: str = t
 
 
 @app.command()
+def benchmark(live: bool = typer.Option(True, help="Run the model baselines (real inference). --no-live reports them as not run."),
+              root: Path = typer.Option(Path("benchmarks"), help="Directory holding manifest.json and labels/."),
+              write_manifest: bool = typer.Option(False, help="Regenerate the tracked manifest and labels, then exit.")) -> None:
+    """Fixed-manifest benchmark: native text, raw VLM, full pipeline and hand-built graph baselines."""
+    from ghost_routes.benchmark import manifest as bm
+    from ghost_routes.benchmark.run import ModelRequired, run, write_report
+
+    if write_manifest:
+        typer.echo(f"wrote {bm.write_manifest(root)}")
+        return
+    logging.basicConfig(level=logging.WARNING)
+    try:
+        report = run(root, live=live)
+    except ModelRequired as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(3) from exc
+    out = write_report(report)
+    typer.echo((out / "report.md").read_text())
+    typer.echo(f"report: {out}")
+    failed = [t["check"] for t in report["thresholds"] if t["met"] is False]
+    if failed:
+        typer.echo(f"thresholds not met: {', '.join(failed)}", err=True)
+        raise typer.Exit(1)
+
+
+@app.command()
 def openapi(out: Path = typer.Option(..., "--out", "-o")) -> None:
     """Write the API's OpenAPI document (the web client's types are generated from it)."""
     from ghost_routes.api.app import create_app
