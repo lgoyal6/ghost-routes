@@ -16,6 +16,9 @@ const FLAG_TEXT: Record<string, string> = {
   dimension_label_disagrees_with_anchor: "The model's dimension disagrees with the printed one, so no value was recorded.",
   anchor_outside_bbox: "Cited text lies outside the proposal's box.",
   unknown_line_id: "The model cited a text line that does not exist.",
+  no_phase_callout_nearby: "No phase callout points at or sits near this line; its phase is unresolved.",
+  phase_from_nearest_callout: "No leader points at this line; the phase comes from the nearest leaderless phase callout and needs review.",
+  phase_ambiguous: "Callouts for different phases point at or sit near this line, so no phase was assigned.",
 };
 
 function flagText(u: string): string {
@@ -87,7 +90,12 @@ function Detail({ o, onChanged }: { o: Observation; onChanged: (o: Observation) 
     return () => window.removeEventListener("keydown", key);
   }, [act, reviewer]);
 
-  const props = o.properties as { anchor_source?: string; crop_id?: string; value_m?: number };
+  const props = o.properties as { anchor_source?: string; crop_id?: string; value_m?: number; source?: string; binding?: string };
+  const found = props.source === "vector" && props.binding
+    ? props.binding.startsWith("legend:")
+      ? `PDF vector strokes in the style the legend shows for "${props.binding.slice(7)}"`
+      : "PDF vector strokes interleaved with X symbols (a drawn fence)"
+    : undefined;
   return (
     <section aria-label="Selected observation">
       <div className="spread">
@@ -96,6 +104,7 @@ function Detail({ o, onChanged }: { o: Observation; onChanged: (o: Observation) 
       </div>
       <dl className="kv" style={{ marginTop: "0.5rem" }}>
         <dt>Provenance</dt><dd>{o.provenance === "model" ? "vision model proposal" : o.provenance}{o.extraction_run_id && <span className="mono small"> ({o.extraction_run_id})</span>}</dd>
+        {found && <><dt>Found in</dt><dd>{found}</dd></>}
         {props.anchor_source && <><dt>Text anchor</dt><dd>{props.anchor_source.replace(/_/g, " ")}</dd></>}
         <dt>Anchored text</dt><dd>{o.supporting_text ? <q>{o.supporting_text}</q> : <span className="muted">none</span>}</dd>
         <dt>Phases</dt><dd>{(cv.phase_refs ?? o.phase_refs).join(", ") || <span className="muted">none supported</span>}</dd>
@@ -285,13 +294,13 @@ export function SheetPage() {
             <span><span aria-hidden="true" style={{ color: "var(--warn)" }}>{"□"}</span> pending</span>
             <span><span aria-hidden="true" style={{ color: "var(--ok)" }}>{"□"}</span> accepted or edited</span>
             <span><span aria-hidden="true" style={{ color: "var(--ghost)" }}>{"□"}</span> rejected</span>
-            <span>dashed: native PDF text; solid: model proposal</span>
+            <span>dashed boxes: native PDF text or vector strokes; solid boxes: model or human proposal</span>
           </p>
         </Panel>
         <div>
           <Panel id="obs-h" title={`Observations (${items.length})`} actions={<span className="small muted">{Object.entries(counts).map(([k, v]) => `${v} ${k}`).join(", ")}</span>}>
             <div className="row" style={{ marginBottom: "0.5rem" }}>
-              <label>Provenance<select value={prov} onChange={(e) => setProv(e.target.value)}><option value="">all</option><option value="model">model</option><option value="native">native text</option><option value="human">human</option></select></label>
+              <label>Provenance<select value={prov} onChange={(e) => setProv(e.target.value)}><option value="">all</option><option value="model">model</option><option value="native">native text and vectors</option><option value="human">human</option></select></label>
               <label>Review<select value={state} onChange={(e) => setState(e.target.value)}><option value="">all</option><option>pending</option><option>accepted</option><option>edited</option><option>rejected</option></select></label>
               <label>Class<select value={cls} onChange={(e) => setCls(e.target.value)}><option value="">all</option>{["path", "barrier", "crossing", "entrance", "note", "phase_label", "legend_entry", "dimension", "place_label"].map((c) => <option key={c}>{c}</option>)}</select></label>
             </div>

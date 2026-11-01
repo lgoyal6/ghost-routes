@@ -9,13 +9,14 @@ from pathlib import Path
 from typing import Any
 
 from geoalchemy2.shape import from_shape
-from shapely.geometry import Point, Polygon
+from shapely.geometry import LineString, Point, Polygon
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ghost_routes.config import get_settings
 from ghost_routes.documents.pdf import inspect_pdf, render_page, tiles
 from ghost_routes.documents.transforms import fit_similarity
+from ghost_routes.documents.vectors import vector_observations
 from ghost_routes.inference.extract import native_observations
 from ghost_routes.persistence import repo
 from ghost_routes.persistence import schema as S
@@ -139,8 +140,9 @@ def ingest_pdf(
                                "properties": ob["properties"]},
             ))
             n_native += 1
+        n_vector = add_vector_observations(s, sheet, p.words, p.strokes)
         sheets_out.append({"sheet_id": sheet.id, "printed_sheet_id": sheet.printed_sheet_id, "crops": crop_ids,
-                           "native_observations": n_native, "rotation": p.rotation,
+                           "native_observations": n_native, "vector_observations": n_vector, "rotation": p.rotation,
                            "size_pt": [p.width_pt, p.height_pt]})
     s.flush()
     # A new source revision makes results derived from older sources stale.
@@ -148,6 +150,59 @@ def ingest_pdf(
                     f"plan revision {revision_label} imported for {project_id}; results used an older source")
     return {"source_artifact_id": artifact.id, "sha256": sha, "plan_revision_id": plan.id,
             "supersedes": plan.supersedes_id, "sheets": sheets_out}
+
+
+def add_vector_observations(s: Session, sheet: S.Sheet, words: list[dict[str, Any]], strokes: list[dict[str, Any]]) -> int:
+    """Store path and barrier proposals found in the sheet's vector strokes (idempotent per geometry)."""
+    found = vector_observations(words, strokes)
+    sheet.vector_summary = {**(sheet.vector_summary or {}), "geometry": found["summary"]}
+    n = 0
+    for ob in found["observations"]:
+        key = hashlib.sha256(f"vector:{sheet.id}:{ob['cls']}:{ob['geometry']}".encode()).hexdigest()[:40]
+        if s.scalar(select(S.Observation.id).where(S.Observation.idempotency_key == key)) is not None:
+            continue
+        x0, y0, x1, y1 = ob["bbox"]
+        # A horizontal or vertical stroke needs a nonzero selection box, not a degenerate polygon.
+        if x0 == x1:
+            x0, x1 = x0 - 0.5, x1 + 0.5
+        if y0 == y1:
+            y0, y1 = y0 - 0.5, y1 + 0.5
+        s.add(S.Observation(
+            id=repo.new_id("obs"), idempotency_key=key, sheet_id=sheet.id, provenance="native", cls=ob["cls"],
+            label=ob["label"], geom=from_shape(LineString(ob["geometry"]), srid=0),
+            bbox=from_shape(Polygon([(x0, y0), (x1, y0), (x1, y1), (x0, y1)]), srid=0),
+            properties={**ob["properties"], "word_ids": ob["word_ids"]}, phase_refs=ob["phase_refs"],
+            supporting_text="", uncertainty=ob["flags"], review_state="pending",
+            current_value={"cls": ob["cls"], "label": ob["label"], "phase_refs": ob["phase_refs"],
+                           "properties": ob["properties"]},
+        ))
+        n += 1
+    s.flush()
+    return n
+
+
+def vectorize_sheet(s: Session, sheet_id: str) -> dict[str, Any]:
+    """Re-read a stored source PDF and add vector geometry proposals to an existing sheet."""
+    cfg = get_settings()
+    sheet = s.get(S.Sheet, sheet_id)
+    if sheet is None:
+        raise repo.NotFound(f"sheet {sheet_id}")
+    plan = s.get(S.PlanRevision, sheet.plan_revision_id)
+    art = s.get(S.SourceArtifact, plan.source_artifact_id) if plan else None
+    if art is None or not art.storage_path:
+        raise repo.NotFound(f"source file for sheet {sheet_id}")
+    pages, _ = inspect_pdf(Path(art.storage_path).read_bytes(), max_bytes=cfg.max_upload_bytes, max_pages=cfg.max_pages)
+    page = pages[sheet.page_index]
+    added = add_vector_observations(s, sheet, page.words, page.strokes)
+    return {"sheet_id": sheet_id, "added": added, "summary": sheet.vector_summary["geometry"]}
+
+
+def vector_classes(s: Session, sheet_id: str) -> set[str]:
+    """Geometry classes that vector strokes already cover on a sheet."""
+    rows = s.scalars(select(S.Observation.cls).where(
+        S.Observation.sheet_id == sheet_id, S.Observation.provenance == "native",
+        S.Observation.properties["source"].astext == "vector")).all()
+    return set(rows)
 
 
 def calibrate_sheet(

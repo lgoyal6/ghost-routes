@@ -123,6 +123,25 @@ test("keyboard review on a sheet records an attributed decision", async ({ page 
   await axe(page);
 });
 
+test("native vector paths show their legend provenance and remain reviewable", async ({ page }) => {
+  await page.goto("/");
+  await page.getByLabel("Reviewing as").fill(REVIEWER);
+  await page.getByRole("link", { name: "Sheet ASH-P1" }).click();
+  await page.getByRole("combobox", { name: /^Provenance/ }).selectOption("native");
+  await page.getByRole("combobox", { name: /^Class/ }).selectOption("path");
+  const rows = page.getByRole("table", { name: "Observations" }).getByRole("row");
+  await expect(rows).toHaveCount(8); // header and seven native paths
+  await rows.nth(1).getByRole("button").click();
+  const detail = page.getByRole("region", { name: "Selected observation" });
+  await expect(detail).toContainText('PDF vector strokes in the style the legend shows for "PEDESTRIAN PATH"');
+  await expect(detail.getByText("pending", { exact: true })).toBeVisible();
+  await page.locator("body").press("a");
+  await expect(detail.getByText("accepted", { exact: true })).toBeVisible();
+  await expect(detail.getByRole("listitem").filter({ hasText: `accept by ${REVIEWER}` })).toContainText("human ui");
+  await axe(page);
+  await page.screenshot({ path: test.info().outputPath("vector-review.png"), fullPage: true });
+});
+
 test("importing a revised sheet marks dependent results stale", async ({ page }) => {
   const pdf = test.info().outputPath("ASH-Q1-revB.pdf");
   execFileSync("uv", ["run", "python", "-c",

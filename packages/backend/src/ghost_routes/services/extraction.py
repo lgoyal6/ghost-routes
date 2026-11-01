@@ -15,6 +15,7 @@ from sqlalchemy.orm import Session
 from ghost_routes.config import get_settings
 from ghost_routes.documents.transforms import crop_to_page
 from ghost_routes.inference.extract import (
+    GEOMETRY_CLASSES,
     OUTPUT_SCHEMA,
     PROMPT_VERSION,
     VALIDATOR_VERSION,
@@ -31,8 +32,14 @@ from ghost_routes.jobs.worker import JobContext, PermanentError
 from ghost_routes.persistence import repo
 from ghost_routes.persistence import schema as S
 from ghost_routes.persistence.db import transaction
+from ghost_routes.services.documents import vector_classes
 
 PIPELINE = "gr-pipeline/1 native-words+qwen-vl crop extraction"
+OBSERVATION_POLICY = "gr-observations/2-native-vectors"
+
+
+def observation_policy(s: Session, sheet_id: str) -> dict[str, Any]:
+    return {"version": OBSERVATION_POLICY, "vector_classes": sorted(vector_classes(s, sheet_id))}
 
 
 class ModelUnavailable(RuntimeError):
@@ -76,8 +83,13 @@ def request_extraction(s: Session, sheet_id: str, crop_ids: list[str] | None = N
 
 
 def add_observations(s: Session, report: ValidationReport | None, ident: str, run_id: str, crop: S.Crop) -> int:
+    """Store validated proposals. Geometry classes that the sheet's vector strokes already cover are
+    skipped: the model's own line geometry is not reliable (see docs/benchmark.md)."""
+    covered = vector_classes(s, crop.sheet_id)
     n = 0
     for ob in (report.observations if report else []):
+        if ob.cls in covered and ob.cls in GEOMETRY_CLASSES:
+            continue
         geom = Point(ob.geometry_page[0]) if len(ob.geometry_page) == 1 else LineString(ob.geometry_page)
         s.add(S.Observation(
             id=repo.new_id("obs"), idempotency_key=ob.key(f"{ident}:{VALIDATOR_VERSION}"), sheet_id=crop.sheet_id,
@@ -106,8 +118,10 @@ def revalidate_sheet(s: Session, sheet_id: str) -> dict[str, Any]:
     runs = s.scalars(select(S.ExtractionRun).where(S.ExtractionRun.sheet_id == sheet_id,
                                                    S.ExtractionRun.status != "failed")
                      .order_by(S.ExtractionRun.created_at)).all()
+    policy = observation_policy(s, sheet_id)
     for run in runs:
-        if (run.validation or {}).get("validator") == VALIDATOR_VERSION:
+        if ((run.validation or {}).get("validator") == VALIDATOR_VERSION
+                and (run.validation or {}).get("observation_policy") == policy):
             out.append({"run_id": run.id, "skipped": "already current"})
             continue
         obs_ids = select(S.Observation.id).where(S.Observation.extraction_run_id == run.id)
@@ -132,7 +146,7 @@ def revalidate_sheet(s: Session, sheet_id: str) -> dict[str, Any]:
             continue
         s.execute(delete(S.Observation).where(S.Observation.id.in_(obs_ids)))
         n = add_observations(s, report, run.identity_hash, run.id, crop)
-        run.validation = report.summary()
+        run.validation = {**report.summary(), "observation_policy": policy}
         run.status = "succeeded" if n else "empty"
         out.append({"run_id": run.id, "crop_id": crop.id, "observations": n})
     # Analyses consume only reviewed evidence, and reviewed runs are skipped above,
@@ -207,7 +221,8 @@ def handle_extract_job(ctx: JobContext) -> None:
                 pipeline=PIPELINE, model=status.model, model_digest=status.digest or "", prompt_version=PROMPT_VERSION,
                 prompt_sha256=prompt_sha256(), settings=options, status=status_s, attempts=len(attempts),
                 raw_response_path=str(raw_path), error=None if status_s != "failed" else attempts[-1].get("error"),
-                validation=report.summary() if report else {}, duration_ms=duration,
+                validation={**(report.summary() if report else {}), "observation_policy": observation_policy(s, crop.sheet_id)},
+                duration_ms=duration,
             ))
             s.flush()
             n = add_observations(s, report if status_s != "failed" else None, ident, run_id, crop)

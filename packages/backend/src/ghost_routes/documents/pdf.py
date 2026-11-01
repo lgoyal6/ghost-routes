@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any
 
 PDF_MAGIC = b"%PDF-"
+MAX_STROKES = 50_000  # per page; beyond this the page is flagged rather than parsed further
 
 
 class DocumentRejected(ValueError):
@@ -31,6 +32,7 @@ class PageInfo:
     rotation: int
     words: list[dict[str, Any]]
     vectors: dict[str, Any]
+    strokes: list[dict[str, Any]]
 
 
 def _limit_cpu(seconds: int) -> None:
@@ -63,14 +65,25 @@ def _extract(data: bytes, max_pages: int, cpu_s: int) -> dict[str, Any]:
                               "x1": round(w["x1"], 3), "bottom": round(w["bottom"], 3), "upright": bool(w["upright"]),
                               "size": round(float(w.get("size", 0.0)), 2)})
             dashed = 0
+            strokes: list[dict[str, Any]] = []
             for ln in page.lines + page.curves:
-                if ln.get("dash") and ln["dash"][0]:
+                dash = ln.get("dash")
+                pattern = list(dash[0]) if dash and dash[0] else []
+                if pattern:
                     dashed += 1
+                if len(strokes) < MAX_STROKES and len(ln.get("pts") or []) >= 2:
+                    color = ln.get("stroking_color")
+                    color = [color] if isinstance(color, (int, float)) else list(color or [])
+                    strokes.append({"pts": [[round(x, 2), round(y, 2)] for x, y in ln["pts"]],
+                                    "w": round(float(ln.get("linewidth") or 0), 3), "dash": pattern,
+                                    "color": [round(float(c), 3) for c in color if isinstance(c, (int, float))]})
             pages.append({
                 "index": i, "width_pt": float(page.width), "height_pt": float(page.height),
                 "rotation": int(page.rotation or 0) % 360, "words": words,
                 "vectors": {"lines": len(page.lines), "curves": len(page.curves), "rects": len(page.rects),
-                            "images": len(page.images), "dashed": dashed},
+                            "images": len(page.images), "dashed": dashed,
+                            "strokes_truncated": len(page.lines) + len(page.curves) > MAX_STROKES},
+                "strokes": strokes,
             })
     meta = doc.get_metadata_dict() if hasattr(doc, "get_metadata_dict") else {}
     return {"pages": pages, "metadata": {k: str(v) for k, v in (meta or {}).items() if v}}
@@ -94,7 +107,8 @@ def inspect_pdf(data: bytes, *, max_bytes: int, max_pages: int, timeout_s: float
     out = json.loads(proc.stdout)
     if "error" in out:
         raise DocumentRejected(out["error"])
-    pages = [PageInfo(p["index"], p["width_pt"], p["height_pt"], p["rotation"], p["words"], p["vectors"]) for p in out["pages"]]
+    pages = [PageInfo(p["index"], p["width_pt"], p["height_pt"], p["rotation"], p["words"], p["vectors"], p["strokes"])
+             for p in out["pages"]]
     return pages, out["metadata"]
 
 
