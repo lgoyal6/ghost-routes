@@ -1,0 +1,492 @@
+[
+ {
+  "cls": "context",
+  "label": "SYNTHETIC FIXTURE - FICTIONAL ASHGROVE CAMPUS - PROJECT Q UTILITY TRENCH (FICTIONAL)",
+  "bbox": [
+   30,
+   742.0,
+   534.0,
+   752.0
+  ],
+  "geometry": [],
+  "phase_refs": [],
+  "properties": {}
+ },
+ {
+  "cls": "context",
+  "label": "SHEET NUMBER ASH-Q1",
+  "bbox": [
+   964.0,
+   742.0,
+   1078.0,
+   752.0
+  ],
+  "geometry": [],
+  "phase_refs": [],
+  "properties": {}
+ },
+ {
+  "cls": "context",
+  "label": "REVISION B",
+  "bbox": [
+   964.0,
+   756.0,
+   1018.0,
+   765.0
+  ],
+  "geometry": [],
+  "phase_refs": [],
+  "properties": {}
+ },
+ {
+  "cls": "path",
+  "label": "e1",
+  "bbox": [
+   180.0,
+   560.0,
+   540.0,
+   560.0
+  ],
+  "geometry": [
+   [
+    180.0,
+    560.0
+   ],
+   [
+    540.0,
+    560.0
+   ]
+  ],
+  "phase_refs": [],
+  "properties": {
+   "edge_id": "e1"
+  }
+ },
+ {
+  "cls": "path",
+  "label": "e2",
+  "bbox": [
+   540.0,
+   560.0,
+   900.0,
+   560.0
+  ],
+  "geometry": [
+   [
+    540.0,
+    560.0
+   ],
+   [
+    900.0,
+    560.0
+   ]
+  ],
+  "phase_refs": [],
+  "properties": {
+   "edge_id": "e2"
+  }
+ },
+ {
+  "cls": "path",
+  "label": "e3",
+  "bbox": [
+   180.0,
+   260.0,
+   180.0,
+   560.0
+  ],
+  "geometry": [
+   [
+    180.0,
+    560.0
+   ],
+   [
+    180.0,
+    260.0
+   ]
+  ],
+  "phase_refs": [],
+  "properties": {
+   "edge_id": "e3"
+  }
+ },
+ {
+  "cls": "path",
+  "label": "e4",
+  "bbox": [
+   540.0,
+   260.0,
+   540.0,
+   560.0
+  ],
+  "geometry": [
+   [
+    540.0,
+    560.0
+   ],
+   [
+    540.0,
+    260.0
+   ]
+  ],
+  "phase_refs": [],
+  "properties": {
+   "edge_id": "e4"
+  }
+ },
+ {
+  "cls": "path",
+  "label": "e5",
+  "bbox": [
+   900.0,
+   260.0,
+   900.0,
+   560.0
+  ],
+  "geometry": [
+   [
+    900.0,
+    560.0
+   ],
+   [
+    900.0,
+    260.0
+   ]
+  ],
+  "phase_refs": [],
+  "properties": {
+   "edge_id": "e5"
+  }
+ },
+ {
+  "cls": "path",
+  "label": "e6",
+  "bbox": [
+   180.0,
+   260.0,
+   540.0,
+   260.0
+  ],
+  "geometry": [
+   [
+    180.0,
+    260.0
+   ],
+   [
+    540.0,
+    260.0
+   ]
+  ],
+  "phase_refs": [],
+  "properties": {
+   "edge_id": "e6"
+  }
+ },
+ {
+  "cls": "path",
+  "label": "e7",
+  "bbox": [
+   540.0,
+   260.0,
+   900.0,
+   260.0
+  ],
+  "geometry": [
+   [
+    540.0,
+    260.0
+   ],
+   [
+    900.0,
+    260.0
+   ]
+  ],
+  "phase_refs": [],
+  "properties": {
+   "edge_id": "e7"
+  }
+ },
+ {
+  "cls": "barrier",
+  "label": "PHASE 1 FENCING",
+  "bbox": [
+   510.0,
+   380.0,
+   570.0,
+   440.0
+  ],
+  "geometry": [
+   [
+    510.0,
+    440.0
+   ],
+   [
+    570.0,
+    440.0
+   ],
+   [
+    570.0,
+    380.0
+   ]
+  ],
+  "phase_refs": [
+   "PHASE 1"
+  ],
+  "properties": {}
+ },
+ {
+  "cls": "legend_entry",
+  "label": "PHASE 1 FENCING",
+  "bbox": [
+   578.0,
+   418.0,
+   650.0,
+   426.0
+  ],
+  "geometry": [],
+  "phase_refs": [
+   "PHASE 1"
+  ],
+  "properties": {}
+ },
+ {
+  "cls": "barrier",
+  "label": "PHASE 1 FENCING",
+  "bbox": [
+   690.0,
+   230.0,
+   750.0,
+   290.0
+  ],
+  "geometry": [
+   [
+    690.0,
+    290.0
+   ],
+   [
+    750.0,
+    230.0
+   ]
+  ],
+  "phase_refs": [
+   "PHASE 1"
+  ],
+  "properties": {}
+ },
+ {
+  "cls": "legend_entry",
+  "label": "PHASE 1 FENCING",
+  "bbox": [
+   758.0,
+   208.0,
+   830.0,
+   216.0
+  ],
+  "geometry": [],
+  "phase_refs": [
+   "PHASE 1"
+  ],
+  "properties": {}
+ },
+ {
+  "cls": "barrier",
+  "label": "PHASE 1 FENCING",
+  "bbox": [
+   720.0,
+   530.0,
+   720.0,
+   590.0
+  ],
+  "geometry": [
+   [
+    720.0,
+    590.0
+   ],
+   [
+    720.0,
+    530.0
+   ]
+  ],
+  "phase_refs": [
+   "PHASE 1"
+  ],
+  "properties": {}
+ },
+ {
+  "cls": "legend_entry",
+  "label": "PHASE 1 FENCING",
+  "bbox": [
+   728.0,
+   508.0,
+   800.0,
+   516.0
+  ],
+  "geometry": [],
+  "phase_refs": [
+   "PHASE 1"
+  ],
+  "properties": {}
+ },
+ {
+  "cls": "context",
+  "label": "LEGEND",
+  "bbox": [
+   924.0,
+   60,
+   960.0,
+   70
+  ],
+  "geometry": [],
+  "phase_refs": [],
+  "properties": {}
+ },
+ {
+  "cls": "legend_entry",
+  "label": "TEMPORARY FENCING",
+  "bbox": [
+   984.0,
+   79,
+   1065.6,
+   87
+  ],
+  "geometry": [],
+  "phase_refs": [],
+  "properties": {}
+ },
+ {
+  "cls": "legend_entry",
+  "label": "PEDESTRIAN PATH",
+  "bbox": [
+   984.0,
+   97,
+   1056.0,
+   105
+  ],
+  "geometry": [],
+  "phase_refs": [],
+  "properties": {}
+ },
+ {
+  "cls": "context",
+  "label": "PHASING NOTES",
+  "bbox": [
+   924.0,
+   140.0,
+   1002.0,
+   150.0
+  ],
+  "geometry": [],
+  "phase_refs": [],
+  "properties": {}
+ },
+ {
+  "cls": "note",
+  "label": "1. PHASE 1 CLOSES THE B-E CROSSING, THE E-F WALK AND THE B-C WALK.",
+  "bbox": [
+   924.0,
+   156.0,
+   1201.2,
+   163.0
+  ],
+  "geometry": [],
+  "phase_refs": [
+   "PHASE 1"
+  ],
+  "properties": {}
+ },
+ {
+  "cls": "note",
+  "label": "2. PEDESTRIANS DETOUR VIA THE WEST WALK DURING PHASE 1.",
+  "bbox": [
+   924.0,
+   172.0,
+   1155.0,
+   179.0
+  ],
+  "geometry": [],
+  "phase_refs": [
+   "PHASE 1"
+  ],
+  "properties": {}
+ },
+ {
+  "cls": "dimension",
+  "label": "MIN 6' PEDESTRIAN PATH",
+  "bbox": [
+   200.0,
+   590.0,
+   305.6,
+   598.0
+  ],
+  "geometry": [],
+  "phase_refs": [],
+  "properties": {
+   "value_m": 1.8288
+  }
+ },
+ {
+  "cls": "place_label",
+  "label": "HALDEN LAB",
+  "bbox": [
+   132.0,
+   620.0,
+   186.0,
+   629.0
+  ],
+  "geometry": [],
+  "phase_refs": [],
+  "properties": {}
+ },
+ {
+  "cls": "place_label",
+  "label": "MERROW LIBRARY",
+  "bbox": [
+   780.0,
+   188.0,
+   855.6,
+   197.0
+  ],
+  "geometry": [],
+  "phase_refs": [],
+  "properties": {}
+ },
+ {
+  "cls": "context",
+  "label": "0",
+  "bbox": [
+   58.0,
+   686.0,
+   62.2,
+   693.0
+  ],
+  "geometry": [],
+  "phase_refs": [],
+  "properties": {}
+ },
+ {
+  "cls": "context",
+  "label": "20 M",
+  "bbox": [
+   174.0,
+   686.0,
+   190.8,
+   693.0
+  ],
+  "geometry": [],
+  "phase_refs": [],
+  "properties": {}
+ },
+ {
+  "cls": "context",
+  "label": "SCALE IN METRES (1 M = 6 PT ON THIS SHEET)",
+  "bbox": [
+   60.0,
+   708.0,
+   211.2,
+   714.0
+  ],
+  "geometry": [],
+  "phase_refs": [],
+  "properties": {}
+ }
+]
