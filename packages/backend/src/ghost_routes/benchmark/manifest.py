@@ -22,7 +22,10 @@ DEV_FAMILIES = {"ashgrove-P"}
 # Declared before any held-out evaluation; changing them must be recorded in the manifest history.
 THRESHOLDS = {
     "manual_graph": {"status_correctness": 1.0, "false_supported": 0},
-    "full_pipeline_held_out": {"false_connections": 0, "phase_text_recall_min": 0.6, "note_recall_min": 0.5},
+    "full_pipeline_held_out": {"false_connections": 0, "phase_text_recall_min": 0.6, "note_recall_min": 0.5,
+                               "path_recall_min": 0.8, "path_precision_min": 0.8,
+                               "barrier_recall_min": 0.8, "barrier_precision_min": 0.8,
+                               "geometry_median_error_m_max": 1.0, "phase_assignment_min": 0.9},
 }
 # Every change to inputs, labels or thresholds is recorded here, with whether any model result had been seen.
 HISTORY = [
@@ -32,6 +35,10 @@ HISTORY = [
     {"date": "2026-10-31", "change": "note only, thresholds unchanged: the first live run met every declared threshold, but "
      "the thresholds covered recall and false connections, not precision or geometry, where the model did poorly (path and "
      "barrier recall 0). Precision and geometry thresholds belong in the next declaration, set before the next held-out run.",
+     "model_results_seen": True},
+    {"date": "2026-11-01", "change": "added path and barrier precision and recall (0.8 each), median geometry error (1 m) "
+     "and phase assignment (0.9) thresholds for the held-out full pipeline, declared before vector geometry extraction was "
+     "written or run on any sheet. Text precision is still not thresholded: duplicate text proposals are separate work.",
      "model_results_seen": True},
 ]
 REAL_PLANS = [{
