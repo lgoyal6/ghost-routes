@@ -1,0 +1,6689 @@
+{
+ "components": {
+  "schemas": {
+   "AccessRequirement": {
+    "additionalProperties": false,
+    "properties": {
+     "departure_window": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/Interval"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "description": {
+      "default": "",
+      "title": "Description",
+      "type": "string"
+     },
+     "destinations": {
+      "items": {
+       "type": "string"
+      },
+      "title": "Destinations",
+      "type": "array"
+     },
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "label": {
+      "title": "Label",
+      "type": "string"
+     },
+     "max_added_distance_m": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Max Added Distance M"
+     },
+     "max_detour_ratio": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Max Detour Ratio"
+     },
+     "origins": {
+      "items": {
+       "type": "string"
+      },
+      "title": "Origins",
+      "type": "array"
+     },
+     "profile_id": {
+      "title": "Profile Id",
+      "type": "string"
+     },
+     "required_alternatives": {
+      "default": 1,
+      "title": "Required Alternatives",
+      "type": "integer"
+     },
+     "version": {
+      "title": "Version",
+      "type": "integer"
+     },
+     "walking_speed_mps": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Walking Speed Mps"
+     }
+    },
+    "required": [
+     "id",
+     "version",
+     "label",
+     "profile_id",
+     "origins",
+     "destinations"
+    ],
+    "title": "AccessRequirement",
+    "type": "object"
+   },
+   "AddedRestriction": {
+    "additionalProperties": false,
+    "description": "A hypothetical restriction overlay attached to a project's phase.",
+    "properties": {
+     "project_id": {
+      "title": "Project Id",
+      "type": "string"
+     },
+     "restriction": {
+      "$ref": "#/components/schemas/Restriction"
+     }
+    },
+    "required": [
+     "project_id",
+     "restriction"
+    ],
+    "title": "AddedRestriction",
+    "type": "object"
+   },
+   "AnalysisResult": {
+    "additionalProperties": false,
+    "properties": {
+     "assumptions_applied": {
+      "additionalProperties": {
+       "anyOf": [
+        {
+         "type": "number"
+        },
+        {
+         "type": "integer"
+        },
+        {
+         "type": "string"
+        },
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "title": "Assumptions Applied",
+      "type": "object"
+     },
+     "input_hash": {
+      "title": "Input Hash",
+      "type": "string"
+     },
+     "network_revision_id": {
+      "title": "Network Revision Id",
+      "type": "string"
+     },
+     "project_revision_ids": {
+      "items": {
+       "type": "string"
+      },
+      "title": "Project Revision Ids",
+      "type": "array"
+     },
+     "requirements": {
+      "items": {
+       "$ref": "#/components/schemas/RequirementResult"
+      },
+      "title": "Requirements",
+      "type": "array"
+     },
+     "scenario_id": {
+      "title": "Scenario Id",
+      "type": "string"
+     },
+     "scenario_revision_id": {
+      "title": "Scenario Revision Id",
+      "type": "string"
+     },
+     "verifier_version": {
+      "title": "Verifier Version",
+      "type": "string"
+     },
+     "warnings": {
+      "default": [],
+      "items": {
+       "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+     }
+    },
+    "required": [
+     "input_hash",
+     "verifier_version",
+     "scenario_id",
+     "scenario_revision_id",
+     "network_revision_id",
+     "project_revision_ids",
+     "requirements"
+    ],
+    "title": "AnalysisResult",
+    "type": "object"
+   },
+   "AnalysisRunOut": {
+    "properties": {
+     "created_at": {
+      "title": "Created At",
+      "type": "string"
+     },
+     "freshness": {
+      "enum": [
+       "current",
+       "stale",
+       "failed"
+      ],
+      "title": "Freshness",
+      "type": "string"
+     },
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "input_hash": {
+      "title": "Input Hash",
+      "type": "string"
+     },
+     "job_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Job Id"
+     },
+     "published_at": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Published At"
+     },
+     "result": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/AnalysisResult"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "scenario_revision_id": {
+      "title": "Scenario Revision Id",
+      "type": "string"
+     },
+     "stale_reason": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Stale Reason"
+     },
+     "timings": {
+      "additionalProperties": true,
+      "title": "Timings",
+      "type": "object"
+     },
+     "verifier_version": {
+      "title": "Verifier Version",
+      "type": "string"
+     }
+    },
+    "required": [
+     "id",
+     "scenario_revision_id",
+     "input_hash",
+     "verifier_version",
+     "freshness",
+     "stale_reason",
+     "result",
+     "timings",
+     "job_id",
+     "created_at",
+     "published_at"
+    ],
+    "title": "AnalysisRunOut",
+    "type": "object"
+   },
+   "AttributeValue": {
+    "additionalProperties": false,
+    "description": "One attribute claim. ``value=None`` means unknown.\n\nFor CONFLICTING claims ``alternatives`` holds every competing value and\n``value`` must be ``None`` until a review decision resolves it.",
+    "properties": {
+     "alternatives": {
+      "default": [],
+      "items": {
+       "anyOf": [
+        {
+         "type": "number"
+        },
+        {
+         "type": "integer"
+        },
+        {
+         "type": "string"
+        },
+        {
+         "type": "boolean"
+        }
+       ]
+      },
+      "title": "Alternatives",
+      "type": "array"
+     },
+     "evidence": {
+      "default": [],
+      "items": {
+       "type": "string"
+      },
+      "title": "Evidence",
+      "type": "array"
+     },
+     "state": {
+      "$ref": "#/components/schemas/EvidenceState",
+      "default": "UNRESOLVED"
+     },
+     "unit": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Unit"
+     },
+     "value": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "integer"
+       },
+       {
+        "type": "string"
+       },
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Value"
+     }
+    },
+    "title": "AttributeValue",
+    "type": "object"
+   },
+   "BlockKind": {
+    "enum": [
+     "restriction",
+     "constraint",
+     "existence",
+     "direction",
+     "temporary_inactive"
+    ],
+    "title": "BlockKind",
+    "type": "string"
+   },
+   "BlockReason": {
+    "additionalProperties": false,
+    "properties": {
+     "attribute": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Attribute"
+     },
+     "description": {
+      "title": "Description",
+      "type": "string"
+     },
+     "evidence": {
+      "default": [],
+      "items": {
+       "type": "string"
+      },
+      "title": "Evidence",
+      "type": "array"
+     },
+     "kind": {
+      "$ref": "#/components/schemas/BlockKind"
+     },
+     "phase_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Phase Id"
+     },
+     "project_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Project Id"
+     },
+     "restriction_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Restriction Id"
+     },
+     "threshold": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "integer"
+       },
+       {
+        "type": "string"
+       },
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Threshold"
+     },
+     "value": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "integer"
+       },
+       {
+        "type": "string"
+       },
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Value"
+     }
+    },
+    "required": [
+     "kind",
+     "description"
+    ],
+    "title": "BlockReason",
+    "type": "object"
+   },
+   "Blocker": {
+    "additionalProperties": false,
+    "properties": {
+     "edge_id": {
+      "title": "Edge Id",
+      "type": "string"
+     },
+     "from_node": {
+      "title": "From Node",
+      "type": "string"
+     },
+     "reasons": {
+      "items": {
+       "$ref": "#/components/schemas/BlockReason"
+      },
+      "title": "Reasons",
+      "type": "array"
+     },
+     "to_node": {
+      "title": "To Node",
+      "type": "string"
+     }
+    },
+    "required": [
+     "edge_id",
+     "from_node",
+     "to_node",
+     "reasons"
+    ],
+    "title": "Blocker",
+    "type": "object"
+   },
+   "Body_replayBundle": {
+    "properties": {
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     }
+    },
+    "required": [
+     "file"
+    ],
+    "title": "Body_replayBundle",
+    "type": "object"
+   },
+   "Body_uploadSource": {
+    "properties": {
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     },
+     "project_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9-]{1,60}$",
+      "title": "Project Id",
+      "type": "string"
+     },
+     "project_title": {
+      "title": "Project Title",
+      "type": "string"
+     },
+     "reuse_status": {
+      "default": "unknown",
+      "title": "Reuse Status",
+      "type": "string"
+     },
+     "revision_label": {
+      "title": "Revision Label",
+      "type": "string"
+     },
+     "source_url": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Source Url"
+     }
+    },
+    "required": [
+     "file",
+     "project_id",
+     "project_title",
+     "revision_label"
+    ],
+    "title": "Body_uploadSource",
+    "type": "object"
+   },
+   "BuildNetworkIn": {
+    "properties": {
+     "author": {
+      "minLength": 1,
+      "title": "Author",
+      "type": "string"
+     },
+     "author_kind": {
+      "enum": [
+       "human_ui",
+       "human_cli",
+       "scripted"
+      ],
+      "title": "Author Kind",
+      "type": "string"
+     },
+     "barrier_buffer": {
+      "exclusiveMinimum": 0.0,
+      "title": "Barrier Buffer",
+      "type": "number"
+     },
+     "calibration_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Calibration Id"
+     },
+     "expected_head": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Expected Head"
+     },
+     "include_pending": {
+      "default": true,
+      "title": "Include Pending",
+      "type": "boolean"
+     },
+     "phase_map": {
+      "additionalProperties": {
+       "type": "string"
+      },
+      "title": "Phase Map",
+      "type": "object"
+     },
+     "project_id": {
+      "title": "Project Id",
+      "type": "string"
+     },
+     "sheet_id": {
+      "title": "Sheet Id",
+      "type": "string"
+     },
+     "snap_tolerance": {
+      "minimum": 0.0,
+      "title": "Snap Tolerance",
+      "type": "number"
+     }
+    },
+    "required": [
+     "sheet_id",
+     "snap_tolerance",
+     "barrier_buffer",
+     "project_id",
+     "phase_map",
+     "author",
+     "author_kind"
+    ],
+    "title": "BuildNetworkIn",
+    "type": "object"
+   },
+   "CalibrationIn": {
+    "properties": {
+     "control_points": {
+      "items": {
+       "$ref": "#/components/schemas/ControlPoint"
+      },
+      "minItems": 2,
+      "title": "Control Points",
+      "type": "array"
+     },
+     "frame_id": {
+      "title": "Frame Id",
+      "type": "string"
+     },
+     "reviewer": {
+      "minLength": 1,
+      "title": "Reviewer",
+      "type": "string"
+     },
+     "reviewer_kind": {
+      "enum": [
+       "human_ui",
+       "human_cli",
+       "scripted"
+      ],
+      "title": "Reviewer Kind",
+      "type": "string"
+     }
+    },
+    "required": [
+     "control_points",
+     "frame_id",
+     "reviewer",
+     "reviewer_kind"
+    ],
+    "title": "CalibrationIn",
+    "type": "object"
+   },
+   "CalibrationOut": {
+    "properties": {
+     "control_points": {
+      "items": {
+       "additionalProperties": true,
+       "type": "object"
+      },
+      "title": "Control Points",
+      "type": "array"
+     },
+     "created_at": {
+      "title": "Created At",
+      "type": "string"
+     },
+     "frame_id": {
+      "title": "Frame Id",
+      "type": "string"
+     },
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "matrix": {
+      "items": {
+       "type": "number"
+      },
+      "title": "Matrix",
+      "type": "array"
+     },
+     "method": {
+      "title": "Method",
+      "type": "string"
+     },
+     "reviewer": {
+      "title": "Reviewer",
+      "type": "string"
+     },
+     "reviewer_kind": {
+      "title": "Reviewer Kind",
+      "type": "string"
+     },
+     "rms_residual_m": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Rms Residual M"
+     }
+    },
+    "required": [
+     "id",
+     "frame_id",
+     "method",
+     "matrix",
+     "rms_residual_m",
+     "control_points",
+     "reviewer",
+     "reviewer_kind",
+     "created_at"
+    ],
+    "title": "CalibrationOut",
+    "type": "object"
+   },
+   "CandidateEvaluation": {
+    "additionalProperties": false,
+    "properties": {
+     "accepted": {
+      "title": "Accepted",
+      "type": "boolean"
+     },
+     "baseline_outcomes": {
+      "additionalProperties": {
+       "$ref": "#/components/schemas/Outcome"
+      },
+      "title": "Baseline Outcomes",
+      "type": "object"
+     },
+     "construction_feasibility": {
+      "additionalProperties": {
+       "type": "string"
+      },
+      "title": "Construction Feasibility",
+      "type": "object"
+     },
+     "cost": {
+      "title": "Cost",
+      "type": "number"
+     },
+     "input_hash": {
+      "title": "Input Hash",
+      "type": "string"
+     },
+     "outcomes": {
+      "additionalProperties": {
+       "$ref": "#/components/schemas/Outcome"
+      },
+      "title": "Outcomes",
+      "type": "object"
+     },
+     "reasons": {
+      "items": {
+       "type": "string"
+      },
+      "title": "Reasons",
+      "type": "array"
+     },
+     "scenario_revision_id": {
+      "title": "Scenario Revision Id",
+      "type": "string"
+     },
+     "selection": {
+      "additionalProperties": {
+       "type": "integer"
+      },
+      "title": "Selection",
+      "type": "object"
+     }
+    },
+    "required": [
+     "selection",
+     "cost",
+     "accepted",
+     "outcomes",
+     "baseline_outcomes",
+     "reasons",
+     "input_hash",
+     "scenario_revision_id",
+     "construction_feasibility"
+    ],
+    "title": "CandidateEvaluation",
+    "type": "object"
+   },
+   "Comparator": {
+    "enum": [
+     ">=",
+     "<=",
+     "==",
+     "!="
+    ],
+    "title": "Comparator",
+    "type": "string"
+   },
+   "Constraint": {
+    "additionalProperties": false,
+    "properties": {
+     "attribute": {
+      "title": "Attribute",
+      "type": "string"
+     },
+     "comparator": {
+      "$ref": "#/components/schemas/Comparator"
+     },
+     "hard": {
+      "default": true,
+      "title": "Hard",
+      "type": "boolean"
+     },
+     "rationale": {
+      "default": "",
+      "title": "Rationale",
+      "type": "string"
+     },
+     "source": {
+      "default": "",
+      "title": "Source",
+      "type": "string"
+     },
+     "threshold": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "integer"
+       },
+       {
+        "type": "string"
+       },
+       {
+        "type": "boolean"
+       }
+      ],
+      "title": "Threshold"
+     },
+     "unit": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Unit"
+     },
+     "weight": {
+      "default": 0.0,
+      "title": "Weight",
+      "type": "number"
+     }
+    },
+    "required": [
+     "attribute",
+     "comparator",
+     "threshold"
+    ],
+    "title": "Constraint",
+    "type": "object"
+   },
+   "ConstraintCheck": {
+    "additionalProperties": false,
+    "properties": {
+     "attribute": {
+      "title": "Attribute",
+      "type": "string"
+     },
+     "comparator": {
+      "title": "Comparator",
+      "type": "string"
+     },
+     "evidence": {
+      "default": [],
+      "items": {
+       "type": "string"
+      },
+      "title": "Evidence",
+      "type": "array"
+     },
+     "hard": {
+      "title": "Hard",
+      "type": "boolean"
+     },
+     "satisfied": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Satisfied"
+     },
+     "state": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/EvidenceState"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "threshold": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "integer"
+       },
+       {
+        "type": "string"
+       },
+       {
+        "type": "boolean"
+       }
+      ],
+      "title": "Threshold"
+     },
+     "unit": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Unit"
+     },
+     "value": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "integer"
+       },
+       {
+        "type": "string"
+       },
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Value"
+     }
+    },
+    "required": [
+     "attribute",
+     "comparator",
+     "threshold",
+     "unit",
+     "hard",
+     "value",
+     "state",
+     "satisfied"
+    ],
+    "title": "ConstraintCheck",
+    "type": "object"
+   },
+   "ControlPoint": {
+    "properties": {
+     "note": {
+      "default": "",
+      "title": "Note",
+      "type": "string"
+     },
+     "page": {
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "number"
+       }
+      ],
+      "title": "Page",
+      "type": "array"
+     },
+     "site": {
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "number"
+       }
+      ],
+      "title": "Site",
+      "type": "array"
+     }
+    },
+    "required": [
+     "page",
+     "site"
+    ],
+    "title": "ControlPoint",
+    "type": "object"
+   },
+   "CoverageAssertion": {
+    "additionalProperties": false,
+    "description": "A reviewed claim that a region is completely modeled.\n\n``scope='network'`` covers baseline pedestrian geometry. ``scope=<project id>``\nsays that project's restrictions within the region were reviewed.",
+    "properties": {
+     "assumptions": {
+      "default": "",
+      "title": "Assumptions",
+      "type": "string"
+     },
+     "attributes_complete": {
+      "default": [],
+      "items": {
+       "type": "string"
+      },
+      "title": "Attributes Complete",
+      "type": "array"
+     },
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "polygon": {
+      "items": {
+       "maxItems": 2,
+       "minItems": 2,
+       "prefixItems": [
+        {
+         "type": "number"
+        },
+        {
+         "type": "number"
+        }
+       ],
+       "type": "array"
+      },
+      "title": "Polygon",
+      "type": "array"
+     },
+     "reviewer": {
+      "title": "Reviewer",
+      "type": "string"
+     },
+     "scope": {
+      "title": "Scope",
+      "type": "string"
+     },
+     "sheets": {
+      "default": [],
+      "items": {
+       "type": "string"
+      },
+      "title": "Sheets",
+      "type": "array"
+     }
+    },
+    "required": [
+     "id",
+     "scope",
+     "polygon",
+     "reviewer"
+    ],
+    "title": "CoverageAssertion",
+    "type": "object"
+   },
+   "CoverageGap": {
+    "additionalProperties": false,
+    "properties": {
+     "description": {
+      "title": "Description",
+      "type": "string"
+     },
+     "kind": {
+      "$ref": "#/components/schemas/GapKind"
+     },
+     "project_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Project Id"
+     },
+     "target": {
+      "title": "Target",
+      "type": "string"
+     }
+    },
+    "required": [
+     "kind",
+     "target",
+     "description"
+    ],
+    "title": "CoverageGap",
+    "type": "object"
+   },
+   "CropOut": {
+    "properties": {
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "rx0": {
+      "title": "Rx0",
+      "type": "integer"
+     },
+     "rx1": {
+      "title": "Rx1",
+      "type": "integer"
+     },
+     "ry0": {
+      "title": "Ry0",
+      "type": "integer"
+     },
+     "ry1": {
+      "title": "Ry1",
+      "type": "integer"
+     },
+     "sha256": {
+      "title": "Sha256",
+      "type": "string"
+     }
+    },
+    "required": [
+     "id",
+     "rx0",
+     "ry0",
+     "rx1",
+     "ry1",
+     "sha256"
+    ],
+    "title": "CropOut",
+    "type": "object"
+   },
+   "DecisionOut": {
+    "properties": {
+     "action": {
+      "title": "Action",
+      "type": "string"
+     },
+     "created_at": {
+      "title": "Created At",
+      "type": "string"
+     },
+     "edited_value": {
+      "anyOf": [
+       {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Edited Value"
+     },
+     "expected_revision": {
+      "title": "Expected Revision",
+      "type": "integer"
+     },
+     "id": {
+      "title": "Id",
+      "type": "integer"
+     },
+     "proposal_snapshot": {
+      "additionalProperties": true,
+      "title": "Proposal Snapshot",
+      "type": "object"
+     },
+     "rationale": {
+      "title": "Rationale",
+      "type": "string"
+     },
+     "resulting_revision": {
+      "title": "Resulting Revision",
+      "type": "integer"
+     },
+     "reviewer": {
+      "title": "Reviewer",
+      "type": "string"
+     },
+     "reviewer_kind": {
+      "title": "Reviewer Kind",
+      "type": "string"
+     }
+    },
+    "required": [
+     "id",
+     "action",
+     "reviewer",
+     "reviewer_kind",
+     "rationale",
+     "edited_value",
+     "expected_revision",
+     "resulting_revision",
+     "created_at",
+     "proposal_snapshot"
+    ],
+    "title": "DecisionOut",
+    "type": "object"
+   },
+   "DepartureGap": {
+    "additionalProperties": false,
+    "properties": {
+     "end": {
+      "format": "date-time",
+      "title": "End",
+      "type": "string"
+     },
+     "level": {
+      "title": "Level",
+      "type": "string"
+     },
+     "start": {
+      "format": "date-time",
+      "title": "Start",
+      "type": "string"
+     }
+    },
+    "required": [
+     "start",
+     "end",
+     "level"
+    ],
+    "title": "DepartureGap",
+    "type": "object"
+   },
+   "DiffOut": {
+    "properties": {
+     "changes": {
+      "items": {
+       "additionalProperties": true,
+       "type": "object"
+      },
+      "title": "Changes",
+      "type": "array"
+     },
+     "from_id": {
+      "title": "From Id",
+      "type": "string"
+     },
+     "kind": {
+      "enum": [
+       "network",
+       "project",
+       "analysis"
+      ],
+      "title": "Kind",
+      "type": "string"
+     },
+     "summary": {
+      "additionalProperties": {
+       "type": "integer"
+      },
+      "title": "Summary",
+      "type": "object"
+     },
+     "to_id": {
+      "title": "To Id",
+      "type": "string"
+     }
+    },
+    "required": [
+     "kind",
+     "from_id",
+     "to_id",
+     "changes",
+     "summary"
+    ],
+    "title": "DiffOut",
+    "type": "object"
+   },
+   "Edge": {
+    "additionalProperties": false,
+    "properties": {
+     "attributes": {
+      "additionalProperties": {
+       "$ref": "#/components/schemas/AttributeValue"
+      },
+      "title": "Attributes",
+      "type": "object"
+     },
+     "directed": {
+      "default": false,
+      "title": "Directed",
+      "type": "boolean"
+     },
+     "existence": {
+      "$ref": "#/components/schemas/EvidenceState",
+      "default": "ACCEPTED"
+     },
+     "existence_evidence": {
+      "default": [],
+      "items": {
+       "type": "string"
+      },
+      "title": "Existence Evidence",
+      "type": "array"
+     },
+     "geometry": {
+      "items": {
+       "maxItems": 2,
+       "minItems": 2,
+       "prefixItems": [
+        {
+         "type": "number"
+        },
+        {
+         "type": "number"
+        }
+       ],
+       "type": "array"
+      },
+      "title": "Geometry",
+      "type": "array"
+     },
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "kind": {
+      "$ref": "#/components/schemas/EdgeKind",
+      "default": "sidewalk"
+     },
+     "label": {
+      "default": "",
+      "title": "Label",
+      "type": "string"
+     },
+     "length_m": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Length M"
+     },
+     "u": {
+      "title": "U",
+      "type": "string"
+     },
+     "v": {
+      "title": "V",
+      "type": "string"
+     }
+    },
+    "required": [
+     "id",
+     "u",
+     "v",
+     "geometry"
+    ],
+    "title": "Edge",
+    "type": "object"
+   },
+   "EdgeAssessment": {
+    "additionalProperties": false,
+    "properties": {
+     "blocks": {
+      "default": [],
+      "items": {
+       "$ref": "#/components/schemas/BlockReason"
+      },
+      "title": "Blocks",
+      "type": "array"
+     },
+     "checks": {
+      "default": [],
+      "items": {
+       "$ref": "#/components/schemas/ConstraintCheck"
+      },
+      "title": "Checks",
+      "type": "array"
+     },
+     "edge_class": {
+      "$ref": "#/components/schemas/EdgeClass"
+     },
+     "edge_id": {
+      "title": "Edge Id",
+      "type": "string"
+     },
+     "evidence": {
+      "default": [],
+      "items": {
+       "type": "string"
+      },
+      "title": "Evidence",
+      "type": "array"
+     },
+     "facts": {
+      "default": [],
+      "items": {
+       "$ref": "#/components/schemas/Fact"
+      },
+      "title": "Facts",
+      "type": "array"
+     },
+     "gaps": {
+      "default": [],
+      "items": {
+       "$ref": "#/components/schemas/CoverageGap"
+      },
+      "title": "Gaps",
+      "type": "array"
+     },
+     "soft_penalty": {
+      "default": 0.0,
+      "title": "Soft Penalty",
+      "type": "number"
+     }
+    },
+    "required": [
+     "edge_id",
+     "edge_class"
+    ],
+    "title": "EdgeAssessment",
+    "type": "object"
+   },
+   "EdgeClass": {
+    "enum": [
+     "CONSERVATIVE",
+     "POSSIBLE_COVERED",
+     "POSSIBLE_UNCOVERED",
+     "BLOCKED"
+    ],
+    "title": "EdgeClass",
+    "type": "string"
+   },
+   "EdgeKind": {
+    "enum": [
+     "sidewalk",
+     "crossing",
+     "path",
+     "ramp",
+     "stairs",
+     "entrance_link",
+     "temporary"
+    ],
+    "title": "EdgeKind",
+    "type": "string"
+   },
+   "EvidenceState": {
+    "enum": [
+     "ACCEPTED",
+     "UNRESOLVED",
+     "CONFLICTING",
+     "REJECTED"
+    ],
+    "title": "EvidenceState",
+    "type": "string"
+   },
+   "ExtractionRunOut": {
+    "properties": {
+     "attempts": {
+      "title": "Attempts",
+      "type": "integer"
+     },
+     "created_at": {
+      "title": "Created At",
+      "type": "string"
+     },
+     "crop_id": {
+      "title": "Crop Id",
+      "type": "string"
+     },
+     "duration_ms": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Duration Ms"
+     },
+     "error": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Error"
+     },
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "job_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Job Id"
+     },
+     "model": {
+      "title": "Model",
+      "type": "string"
+     },
+     "model_digest": {
+      "title": "Model Digest",
+      "type": "string"
+     },
+     "observation_count": {
+      "title": "Observation Count",
+      "type": "integer"
+     },
+     "prompt_sha256": {
+      "title": "Prompt Sha256",
+      "type": "string"
+     },
+     "prompt_version": {
+      "title": "Prompt Version",
+      "type": "string"
+     },
+     "settings": {
+      "additionalProperties": true,
+      "title": "Settings",
+      "type": "object"
+     },
+     "sheet_id": {
+      "title": "Sheet Id",
+      "type": "string"
+     },
+     "status": {
+      "enum": [
+       "succeeded",
+       "empty",
+       "failed"
+      ],
+      "title": "Status",
+      "type": "string"
+     },
+     "validation": {
+      "additionalProperties": true,
+      "title": "Validation",
+      "type": "object"
+     }
+    },
+    "required": [
+     "id",
+     "sheet_id",
+     "crop_id",
+     "job_id",
+     "model",
+     "model_digest",
+     "prompt_version",
+     "prompt_sha256",
+     "settings",
+     "status",
+     "attempts",
+     "error",
+     "validation",
+     "duration_ms",
+     "created_at",
+     "observation_count"
+    ],
+    "title": "ExtractionRunOut",
+    "type": "object"
+   },
+   "Fact": {
+    "additionalProperties": false,
+    "description": "An unresolved fact that a route or result depends on.\n\n``id`` is the key used for review prioritization and for explicit\n``assumptions`` overrides.",
+    "properties": {
+     "alternatives": {
+      "default": [],
+      "items": {
+       "anyOf": [
+        {
+         "type": "number"
+        },
+        {
+         "type": "integer"
+        },
+        {
+         "type": "string"
+        },
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "title": "Alternatives",
+      "type": "array"
+     },
+     "description": {
+      "title": "Description",
+      "type": "string"
+     },
+     "evidence": {
+      "default": [],
+      "items": {
+       "type": "string"
+      },
+      "title": "Evidence",
+      "type": "array"
+     },
+     "favorable": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "integer"
+       },
+       {
+        "type": "string"
+       },
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Favorable"
+     },
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "kind": {
+      "$ref": "#/components/schemas/FactKind"
+     },
+     "target": {
+      "title": "Target",
+      "type": "string"
+     },
+     "unfavorable": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "integer"
+       },
+       {
+        "type": "string"
+       },
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Unfavorable"
+     }
+    },
+    "required": [
+     "id",
+     "kind",
+     "target",
+     "description"
+    ],
+    "title": "Fact",
+    "type": "object"
+   },
+   "FactKind": {
+    "enum": [
+     "edge_existence",
+     "attribute_unknown",
+     "attribute_unresolved",
+     "attribute_conflict",
+     "restriction_unresolved",
+     "restriction_target",
+     "unreviewed_intersection",
+     "temporary_connection",
+     "uncalibrated_geometry",
+     "baseline_unavailable",
+     "soft_unknown",
+     "temporal_search_bound"
+    ],
+    "title": "FactKind",
+    "type": "string"
+   },
+   "Frame": {
+    "additionalProperties": false,
+    "description": "Coordinate frame of a network. Metric claims need ``metric=True``.",
+    "properties": {
+     "description": {
+      "default": "",
+      "title": "Description",
+      "type": "string"
+     },
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "kind": {
+      "enum": [
+       "sheet_points",
+       "site_metric"
+      ],
+      "title": "Kind",
+      "type": "string"
+     },
+     "metric": {
+      "title": "Metric",
+      "type": "boolean"
+     }
+    },
+    "required": [
+     "id",
+     "kind",
+     "metric"
+    ],
+    "title": "Frame",
+    "type": "object"
+   },
+   "GapKind": {
+    "enum": [
+     "network_coverage",
+     "project_coverage",
+     "endpoint_outside",
+     "open_boundary"
+    ],
+    "title": "GapKind",
+    "type": "string"
+   },
+   "GeometryOut": {
+    "description": "Everything needed to draw a scenario revision.",
+    "properties": {
+     "frame": {
+      "$ref": "#/components/schemas/Frame"
+     },
+     "network": {
+      "$ref": "#/components/schemas/NetworkSnapshot"
+     },
+     "projects": {
+      "items": {
+       "$ref": "#/components/schemas/ProjectSnapshot"
+      },
+      "title": "Projects",
+      "type": "array"
+     },
+     "scenario_revision_id": {
+      "title": "Scenario Revision Id",
+      "type": "string"
+     }
+    },
+    "required": [
+     "scenario_revision_id",
+     "network",
+     "projects",
+     "frame"
+    ],
+    "title": "GeometryOut",
+    "type": "object"
+   },
+   "HTTPValidationError": {
+    "properties": {
+     "detail": {
+      "items": {
+       "$ref": "#/components/schemas/ValidationError"
+      },
+      "title": "Detail",
+      "type": "array"
+     }
+    },
+    "title": "HTTPValidationError",
+    "type": "object"
+   },
+   "Interval": {
+    "additionalProperties": false,
+    "description": "Half-open ``[start, end)``; ``end=None`` is unbounded.",
+    "properties": {
+     "end": {
+      "anyOf": [
+       {
+        "format": "date-time",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "End"
+     },
+     "start": {
+      "format": "date-time",
+      "title": "Start",
+      "type": "string"
+     }
+    },
+    "required": [
+     "start"
+    ],
+    "title": "Interval",
+    "type": "object"
+   },
+   "Intervention": {
+    "additionalProperties": false,
+    "properties": {
+     "connection_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Connection Id"
+     },
+     "construction_feasibility": {
+      "default": "unassessed",
+      "enum": [
+       "unassessed",
+       "reviewed_feasible",
+       "reviewed_infeasible"
+      ],
+      "title": "Construction Feasibility",
+      "type": "string"
+     },
+     "cost": {
+      "default": 0.0,
+      "minimum": 0.0,
+      "title": "Cost",
+      "type": "number"
+     },
+     "cost_unit": {
+      "title": "Cost Unit",
+      "type": "string"
+     },
+     "edge_ids": {
+      "default": [],
+      "items": {
+       "type": "string"
+      },
+      "title": "Edge Ids",
+      "type": "array"
+     },
+     "excludes": {
+      "default": [],
+      "items": {
+       "type": "string"
+      },
+      "title": "Excludes",
+      "type": "array"
+     },
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "kind": {
+      "$ref": "#/components/schemas/InterventionKind"
+     },
+     "label": {
+      "title": "Label",
+      "type": "string"
+     },
+     "options": {
+      "default": [],
+      "items": {
+       "$ref": "#/components/schemas/ShiftOption"
+      },
+      "title": "Options",
+      "type": "array"
+     },
+     "phase_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Phase Id"
+     },
+     "project_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Project Id"
+     },
+     "requires": {
+      "default": [],
+      "items": {
+       "type": "string"
+      },
+      "title": "Requires",
+      "type": "array"
+     },
+     "restriction_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Restriction Id"
+     },
+     "side_effects": {
+      "default": [],
+      "items": {
+       "$ref": "#/components/schemas/AddedRestriction"
+      },
+      "title": "Side Effects",
+      "type": "array"
+     },
+     "window": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/Interval"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "required": [
+     "id",
+     "kind",
+     "label",
+     "cost_unit"
+    ],
+    "title": "Intervention",
+    "type": "object"
+   },
+   "InterventionKind": {
+    "enum": [
+     "schedule_shift",
+     "enable_temporary_connection",
+     "keep_segment_open"
+    ],
+    "title": "InterventionKind",
+    "type": "string"
+   },
+   "JobOut": {
+    "properties": {
+     "attempts": {
+      "title": "Attempts",
+      "type": "integer"
+     },
+     "cancel_requested": {
+      "title": "Cancel Requested",
+      "type": "boolean"
+     },
+     "created_at": {
+      "title": "Created At",
+      "type": "string"
+     },
+     "error": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Error"
+     },
+     "finished_at": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Finished At"
+     },
+     "id": {
+      "title": "Id",
+      "type": "integer"
+     },
+     "kind": {
+      "title": "Kind",
+      "type": "string"
+     },
+     "max_attempts": {
+      "title": "Max Attempts",
+      "type": "integer"
+     },
+     "progress": {
+      "additionalProperties": true,
+      "title": "Progress",
+      "type": "object"
+     },
+     "result": {
+      "anyOf": [
+       {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Result"
+     },
+     "state": {
+      "enum": [
+       "queued",
+       "running",
+       "succeeded",
+       "failed",
+       "cancelled"
+      ],
+      "title": "State",
+      "type": "string"
+     },
+     "updated_at": {
+      "title": "Updated At",
+      "type": "string"
+     }
+    },
+    "required": [
+     "id",
+     "kind",
+     "state",
+     "attempts",
+     "max_attempts",
+     "progress",
+     "result",
+     "error",
+     "created_at",
+     "updated_at",
+     "finished_at",
+     "cancel_requested"
+    ],
+    "title": "JobOut",
+    "type": "object"
+   },
+   "JobRef": {
+    "properties": {
+     "created": {
+      "title": "Created",
+      "type": "boolean"
+     },
+     "detail": {
+      "additionalProperties": true,
+      "title": "Detail",
+      "type": "object"
+     },
+     "job_id": {
+      "title": "Job Id",
+      "type": "integer"
+     }
+    },
+    "required": [
+     "job_id",
+     "created"
+    ],
+    "title": "JobRef",
+    "type": "object"
+   },
+   "MobilityProfile": {
+    "additionalProperties": false,
+    "properties": {
+     "constraints": {
+      "items": {
+       "$ref": "#/components/schemas/Constraint"
+      },
+      "title": "Constraints",
+      "type": "array"
+     },
+     "description": {
+      "default": "",
+      "title": "Description",
+      "type": "string"
+     },
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "illustrative": {
+      "default": false,
+      "title": "Illustrative",
+      "type": "boolean"
+     },
+     "label": {
+      "title": "Label",
+      "type": "string"
+     },
+     "review_state": {
+      "default": "draft",
+      "enum": [
+       "draft",
+       "scripted_review",
+       "reviewed"
+      ],
+      "title": "Review State",
+      "type": "string"
+     },
+     "reviewer": {
+      "default": "",
+      "title": "Reviewer",
+      "type": "string"
+     },
+     "version": {
+      "title": "Version",
+      "type": "integer"
+     }
+    },
+    "required": [
+     "id",
+     "version",
+     "label",
+     "constraints"
+    ],
+    "title": "MobilityProfile",
+    "type": "object"
+   },
+   "ModelReadiness": {
+    "properties": {
+     "details": {
+      "anyOf": [
+       {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Details"
+     },
+     "digest": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Digest"
+     },
+     "message": {
+      "title": "Message",
+      "type": "string"
+     },
+     "model": {
+      "title": "Model",
+      "type": "string"
+     },
+     "server_version": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Server Version"
+     },
+     "state": {
+      "enum": [
+       "ready",
+       "model_unavailable",
+       "model_not_pulled"
+      ],
+      "title": "State",
+      "type": "string"
+     },
+     "url": {
+      "title": "Url",
+      "type": "string"
+     }
+    },
+    "required": [
+     "state",
+     "model",
+     "digest",
+     "server_version",
+     "details",
+     "message",
+     "url"
+    ],
+    "title": "ModelReadiness",
+    "type": "object"
+   },
+   "NetworkLineageOut": {
+    "properties": {
+     "frame_id": {
+      "title": "Frame Id",
+      "type": "string"
+     },
+     "frame_kind": {
+      "title": "Frame Kind",
+      "type": "string"
+     },
+     "head_number": {
+      "title": "Head Number",
+      "type": "integer"
+     },
+     "head_revision_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Head Revision Id"
+     },
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "metric": {
+      "title": "Metric",
+      "type": "boolean"
+     },
+     "revisions": {
+      "items": {
+       "additionalProperties": true,
+       "type": "object"
+      },
+      "title": "Revisions",
+      "type": "array"
+     },
+     "synthetic": {
+      "title": "Synthetic",
+      "type": "boolean"
+     },
+     "title": {
+      "title": "Title",
+      "type": "string"
+     }
+    },
+    "required": [
+     "id",
+     "title",
+     "frame_id",
+     "frame_kind",
+     "metric",
+     "head_revision_id",
+     "head_number",
+     "synthetic",
+     "revisions"
+    ],
+    "title": "NetworkLineageOut",
+    "type": "object"
+   },
+   "NetworkSnapshot": {
+    "additionalProperties": false,
+    "properties": {
+     "coverage": {
+      "default": [],
+      "items": {
+       "$ref": "#/components/schemas/CoverageAssertion"
+      },
+      "title": "Coverage",
+      "type": "array"
+     },
+     "edges": {
+      "items": {
+       "$ref": "#/components/schemas/Edge"
+      },
+      "title": "Edges",
+      "type": "array"
+     },
+     "frame": {
+      "$ref": "#/components/schemas/Frame"
+     },
+     "nodes": {
+      "items": {
+       "$ref": "#/components/schemas/Node"
+      },
+      "title": "Nodes",
+      "type": "array"
+     },
+     "revision_id": {
+      "title": "Revision Id",
+      "type": "string"
+     },
+     "snap_tolerance": {
+      "default": 0.0,
+      "title": "Snap Tolerance",
+      "type": "number"
+     }
+    },
+    "required": [
+     "revision_id",
+     "frame",
+     "nodes",
+     "edges"
+    ],
+    "title": "NetworkSnapshot",
+    "type": "object"
+   },
+   "Node": {
+    "additionalProperties": false,
+    "properties": {
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "kind": {
+      "$ref": "#/components/schemas/NodeKind",
+      "default": "junction"
+     },
+     "label": {
+      "default": "",
+      "title": "Label",
+      "type": "string"
+     },
+     "level": {
+      "default": 0,
+      "title": "Level",
+      "type": "integer"
+     },
+     "open_boundary": {
+      "default": false,
+      "title": "Open Boundary",
+      "type": "boolean"
+     },
+     "wait_allowed": {
+      "default": false,
+      "title": "Wait Allowed",
+      "type": "boolean"
+     },
+     "x": {
+      "title": "X",
+      "type": "number"
+     },
+     "y": {
+      "title": "Y",
+      "type": "number"
+     }
+    },
+    "required": [
+     "id",
+     "x",
+     "y"
+    ],
+    "title": "Node",
+    "type": "object"
+   },
+   "NodeKind": {
+    "enum": [
+     "junction",
+     "entrance",
+     "crossing_end",
+     "curb",
+     "endpoint"
+    ],
+    "title": "NodeKind",
+    "type": "string"
+   },
+   "ObservationCreate": {
+    "properties": {
+     "cls": {
+      "title": "Cls",
+      "type": "string"
+     },
+     "geometry_page": {
+      "items": {
+       "items": {
+        "type": "number"
+       },
+       "type": "array"
+      },
+      "minItems": 1,
+      "title": "Geometry Page",
+      "type": "array"
+     },
+     "label": {
+      "default": "",
+      "title": "Label",
+      "type": "string"
+     },
+     "phase_refs": {
+      "items": {
+       "type": "string"
+      },
+      "title": "Phase Refs",
+      "type": "array"
+     },
+     "properties": {
+      "additionalProperties": true,
+      "title": "Properties",
+      "type": "object"
+     },
+     "rationale": {
+      "default": "",
+      "title": "Rationale",
+      "type": "string"
+     },
+     "reviewer": {
+      "title": "Reviewer",
+      "type": "string"
+     },
+     "reviewer_kind": {
+      "enum": [
+       "human_ui",
+       "human_cli",
+       "scripted"
+      ],
+      "title": "Reviewer Kind",
+      "type": "string"
+     }
+    },
+    "required": [
+     "cls",
+     "geometry_page",
+     "reviewer",
+     "reviewer_kind"
+    ],
+    "title": "ObservationCreate",
+    "type": "object"
+   },
+   "ObservationOut": {
+    "properties": {
+     "bbox_page": {
+      "items": {
+       "type": "number"
+      },
+      "title": "Bbox Page",
+      "type": "array"
+     },
+     "cls": {
+      "title": "Cls",
+      "type": "string"
+     },
+     "created_at": {
+      "title": "Created At",
+      "type": "string"
+     },
+     "current_value": {
+      "additionalProperties": true,
+      "title": "Current Value",
+      "type": "object"
+     },
+     "extraction_run_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Extraction Run Id"
+     },
+     "geometry_page": {
+      "items": {
+       "items": {
+        "type": "number"
+       },
+       "type": "array"
+      },
+      "title": "Geometry Page",
+      "type": "array"
+     },
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "label": {
+      "title": "Label",
+      "type": "string"
+     },
+     "phase_refs": {
+      "items": {
+       "type": "string"
+      },
+      "title": "Phase Refs",
+      "type": "array"
+     },
+     "properties": {
+      "additionalProperties": true,
+      "title": "Properties",
+      "type": "object"
+     },
+     "provenance": {
+      "enum": [
+       "native",
+       "model",
+       "human",
+       "scripted"
+      ],
+      "title": "Provenance",
+      "type": "string"
+     },
+     "review_state": {
+      "enum": [
+       "pending",
+       "accepted",
+       "rejected",
+       "edited"
+      ],
+      "title": "Review State",
+      "type": "string"
+     },
+     "revision": {
+      "title": "Revision",
+      "type": "integer"
+     },
+     "sheet_id": {
+      "title": "Sheet Id",
+      "type": "string"
+     },
+     "supporting_text": {
+      "title": "Supporting Text",
+      "type": "string"
+     },
+     "uncertainty": {
+      "items": {},
+      "title": "Uncertainty",
+      "type": "array"
+     }
+    },
+    "required": [
+     "id",
+     "sheet_id",
+     "extraction_run_id",
+     "provenance",
+     "cls",
+     "label",
+     "geometry_page",
+     "bbox_page",
+     "properties",
+     "phase_refs",
+     "supporting_text",
+     "uncertainty",
+     "review_state",
+     "current_value",
+     "revision",
+     "created_at"
+    ],
+    "title": "ObservationOut",
+    "type": "object"
+   },
+   "ObservationPage": {
+    "properties": {
+     "items": {
+      "items": {
+       "$ref": "#/components/schemas/ObservationOut"
+      },
+      "title": "Items",
+      "type": "array"
+     },
+     "limit": {
+      "title": "Limit",
+      "type": "integer"
+     },
+     "offset": {
+      "title": "Offset",
+      "type": "integer"
+     },
+     "total": {
+      "title": "Total",
+      "type": "integer"
+     }
+    },
+    "required": [
+     "items",
+     "total",
+     "offset",
+     "limit"
+    ],
+    "title": "ObservationPage",
+    "type": "object"
+   },
+   "Outcome": {
+    "enum": [
+     "SUPPORTED",
+     "NEEDS_VERIFICATION",
+     "INSUFFICIENT_COVERAGE",
+     "DISCONNECTED_WITHIN_COVERAGE"
+    ],
+    "title": "Outcome",
+    "type": "string"
+   },
+   "PairResult": {
+    "additionalProperties": false,
+    "properties": {
+     "added_crossings": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Added Crossings"
+     },
+     "added_distance_m": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Added Distance M"
+     },
+     "alternatives_found": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Alternatives Found"
+     },
+     "baseline_route": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/Route"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "boundary": {
+      "default": [],
+      "items": {
+       "$ref": "#/components/schemas/Blocker"
+      },
+      "title": "Boundary",
+      "type": "array"
+     },
+     "budget_exceeded_tiers": {
+      "default": [],
+      "items": {
+       "type": "string"
+      },
+      "title": "Budget Exceeded Tiers",
+      "type": "array"
+     },
+     "budget_m": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Budget M"
+     },
+     "coverage_gaps": {
+      "default": [],
+      "items": {
+       "$ref": "#/components/schemas/CoverageGap"
+      },
+      "title": "Coverage Gaps",
+      "type": "array"
+     },
+     "departure_gaps": {
+      "default": [],
+      "items": {
+       "$ref": "#/components/schemas/DepartureGap"
+      },
+      "title": "Departure Gaps",
+      "type": "array"
+     },
+     "destination": {
+      "title": "Destination",
+      "type": "string"
+     },
+     "notes": {
+      "default": [],
+      "items": {
+       "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+     },
+     "origin": {
+      "title": "Origin",
+      "type": "string"
+     },
+     "outcome": {
+      "$ref": "#/components/schemas/Outcome"
+     },
+     "rejected_alternatives": {
+      "default": [],
+      "items": {
+       "$ref": "#/components/schemas/RejectedAlternative"
+      },
+      "title": "Rejected Alternatives",
+      "type": "array"
+     },
+     "route": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/Route"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "uncertainties": {
+      "default": [],
+      "items": {
+       "$ref": "#/components/schemas/Fact"
+      },
+      "title": "Uncertainties",
+      "type": "array"
+     }
+    },
+    "required": [
+     "origin",
+     "destination",
+     "outcome"
+    ],
+    "title": "PairResult",
+    "type": "object"
+   },
+   "Phase": {
+    "additionalProperties": false,
+    "properties": {
+     "effective": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/Interval"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "label": {
+      "title": "Label",
+      "type": "string"
+     },
+     "order": {
+      "title": "Order",
+      "type": "integer"
+     },
+     "prerequisites": {
+      "default": [],
+      "items": {
+       "type": "string"
+      },
+      "title": "Prerequisites",
+      "type": "array"
+     }
+    },
+    "required": [
+     "id",
+     "label",
+     "order"
+    ],
+    "title": "Phase",
+    "type": "object"
+   },
+   "PlanRevisionOut": {
+    "properties": {
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "learned_at": {
+      "title": "Learned At",
+      "type": "string"
+     },
+     "note": {
+      "title": "Note",
+      "type": "string"
+     },
+     "project_id": {
+      "title": "Project Id",
+      "type": "string"
+     },
+     "revision_date": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Revision Date"
+     },
+     "revision_label": {
+      "title": "Revision Label",
+      "type": "string"
+     },
+     "sheets": {
+      "items": {
+       "additionalProperties": true,
+       "type": "object"
+      },
+      "title": "Sheets",
+      "type": "array"
+     },
+     "source": {
+      "additionalProperties": true,
+      "title": "Source",
+      "type": "object"
+     },
+     "superseded_by": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Superseded By"
+     },
+     "supersedes_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Supersedes Id"
+     }
+    },
+    "required": [
+     "id",
+     "project_id",
+     "revision_label",
+     "revision_date",
+     "supersedes_id",
+     "superseded_by",
+     "learned_at",
+     "note",
+     "source",
+     "sheets"
+    ],
+    "title": "PlanRevisionOut",
+    "type": "object"
+   },
+   "ProfileReviewIn": {
+    "properties": {
+     "rationale": {
+      "minLength": 1,
+      "title": "Rationale",
+      "type": "string"
+     },
+     "reviewer": {
+      "minLength": 1,
+      "title": "Reviewer",
+      "type": "string"
+     },
+     "reviewer_kind": {
+      "enum": [
+       "human_ui",
+       "human_cli",
+       "scripted"
+      ],
+      "title": "Reviewer Kind",
+      "type": "string"
+     }
+    },
+    "required": [
+     "reviewer",
+     "reviewer_kind",
+     "rationale"
+    ],
+    "title": "ProfileReviewIn",
+    "type": "object"
+   },
+   "ProjectOut": {
+    "properties": {
+     "description": {
+      "title": "Description",
+      "type": "string"
+     },
+     "head_revision_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Head Revision Id"
+     },
+     "hypothetical": {
+      "title": "Hypothetical",
+      "type": "boolean"
+     },
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "plan_revisions": {
+      "items": {
+       "$ref": "#/components/schemas/PlanRevisionOut"
+      },
+      "title": "Plan Revisions",
+      "type": "array"
+     },
+     "revisions": {
+      "items": {
+       "$ref": "#/components/schemas/ProjectRevisionSummary"
+      },
+      "title": "Revisions",
+      "type": "array"
+     },
+     "synthetic": {
+      "title": "Synthetic",
+      "type": "boolean"
+     },
+     "title": {
+      "title": "Title",
+      "type": "string"
+     }
+    },
+    "required": [
+     "id",
+     "title",
+     "description",
+     "synthetic",
+     "hypothetical",
+     "head_revision_id",
+     "plan_revisions",
+     "revisions"
+    ],
+    "title": "ProjectOut",
+    "type": "object"
+   },
+   "ProjectRevisionSummary": {
+    "properties": {
+     "created_at": {
+      "title": "Created At",
+      "type": "string"
+     },
+     "hypothetical": {
+      "title": "Hypothetical",
+      "type": "boolean"
+     },
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "is_head": {
+      "title": "Is Head",
+      "type": "boolean"
+     },
+     "note": {
+      "title": "Note",
+      "type": "string"
+     },
+     "number": {
+      "title": "Number",
+      "type": "integer"
+     },
+     "plan_revision_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Plan Revision Id"
+     }
+    },
+    "required": [
+     "id",
+     "number",
+     "plan_revision_id",
+     "note",
+     "created_at",
+     "hypothetical",
+     "is_head"
+    ],
+    "title": "ProjectRevisionSummary",
+    "type": "object"
+   },
+   "ProjectSnapshot": {
+    "additionalProperties": false,
+    "properties": {
+     "coverage": {
+      "default": [],
+      "items": {
+       "$ref": "#/components/schemas/CoverageAssertion"
+      },
+      "title": "Coverage",
+      "type": "array"
+     },
+     "extent": {
+      "anyOf": [
+       {
+        "items": {
+         "maxItems": 2,
+         "minItems": 2,
+         "prefixItems": [
+          {
+           "type": "number"
+          },
+          {
+           "type": "number"
+          }
+         ],
+         "type": "array"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Extent"
+     },
+     "hypothetical": {
+      "default": false,
+      "title": "Hypothetical",
+      "type": "boolean"
+     },
+     "phases": {
+      "items": {
+       "$ref": "#/components/schemas/Phase"
+      },
+      "title": "Phases",
+      "type": "array"
+     },
+     "project_id": {
+      "title": "Project Id",
+      "type": "string"
+     },
+     "restrictions": {
+      "default": [],
+      "items": {
+       "$ref": "#/components/schemas/Restriction"
+      },
+      "title": "Restrictions",
+      "type": "array"
+     },
+     "revision_id": {
+      "title": "Revision Id",
+      "type": "string"
+     },
+     "temporary_connections": {
+      "default": [],
+      "items": {
+       "$ref": "#/components/schemas/TemporaryConnection"
+      },
+      "title": "Temporary Connections",
+      "type": "array"
+     },
+     "title": {
+      "title": "Title",
+      "type": "string"
+     }
+    },
+    "required": [
+     "project_id",
+     "revision_id",
+     "title",
+     "phases"
+    ],
+    "title": "ProjectSnapshot",
+    "type": "object"
+   },
+   "QuestionsOut": {
+    "properties": {
+     "input_hash": {
+      "title": "Input Hash",
+      "type": "string"
+     },
+     "meta": {
+      "additionalProperties": true,
+      "title": "Meta",
+      "type": "object"
+     },
+     "questions": {
+      "items": {
+       "$ref": "#/components/schemas/ReviewQuestion"
+      },
+      "title": "Questions",
+      "type": "array"
+     }
+    },
+    "required": [
+     "questions",
+     "meta",
+     "input_hash"
+    ],
+    "title": "QuestionsOut",
+    "type": "object"
+   },
+   "ReadinessOut": {
+    "properties": {
+     "checked_at": {
+      "title": "Checked At",
+      "type": "string"
+     },
+     "database": {
+      "additionalProperties": true,
+      "title": "Database",
+      "type": "object"
+     },
+     "last_successful_inference": {
+      "anyOf": [
+       {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Last Successful Inference"
+     },
+     "migrations": {
+      "additionalProperties": true,
+      "title": "Migrations",
+      "type": "object"
+     },
+     "model": {
+      "$ref": "#/components/schemas/ModelReadiness"
+     },
+     "ready_for_analysis": {
+      "title": "Ready For Analysis",
+      "type": "boolean"
+     },
+     "ready_for_live_inference": {
+      "title": "Ready For Live Inference",
+      "type": "boolean"
+     },
+     "worker": {
+      "additionalProperties": true,
+      "title": "Worker",
+      "type": "object"
+     }
+    },
+    "required": [
+     "checked_at",
+     "database",
+     "migrations",
+     "worker",
+     "last_successful_inference",
+     "model",
+     "ready_for_analysis",
+     "ready_for_live_inference"
+    ],
+    "title": "ReadinessOut",
+    "type": "object"
+   },
+   "RejectedAlternative": {
+    "additionalProperties": false,
+    "properties": {
+     "failing": {
+      "items": {
+       "$ref": "#/components/schemas/EdgeAssessment"
+      },
+      "title": "Failing",
+      "type": "array"
+     },
+     "length_m": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Length M"
+     },
+     "route_edges": {
+      "items": {
+       "type": "string"
+      },
+      "title": "Route Edges",
+      "type": "array"
+     }
+    },
+    "required": [
+     "route_edges",
+     "length_m",
+     "failing"
+    ],
+    "title": "RejectedAlternative",
+    "type": "object"
+   },
+   "RepairIn": {
+    "properties": {
+     "interventions": {
+      "items": {
+       "$ref": "#/components/schemas/Intervention"
+      },
+      "title": "Interventions",
+      "type": "array"
+     },
+     "max_candidates": {
+      "default": 3,
+      "title": "Max Candidates",
+      "type": "integer"
+     },
+     "max_evaluations": {
+      "default": 500,
+      "title": "Max Evaluations",
+      "type": "integer"
+     },
+     "method": {
+      "default": "auto",
+      "enum": [
+       "auto",
+       "enumerate",
+       "cpsat"
+      ],
+      "title": "Method",
+      "type": "string"
+     },
+     "protect": {
+      "items": {
+       "type": "string"
+      },
+      "title": "Protect",
+      "type": "array"
+     },
+     "restore": {
+      "items": {
+       "type": "string"
+      },
+      "title": "Restore",
+      "type": "array"
+     },
+     "time_limit_s": {
+      "default": 30.0,
+      "title": "Time Limit S",
+      "type": "number"
+     }
+    },
+    "required": [
+     "interventions",
+     "restore"
+    ],
+    "title": "RepairIn",
+    "type": "object"
+   },
+   "RepairOut": {
+    "properties": {
+     "candidates": {
+      "items": {
+       "additionalProperties": true,
+       "type": "object"
+      },
+      "title": "Candidates",
+      "type": "array"
+     },
+     "freshness": {
+      "title": "Freshness",
+      "type": "string"
+     },
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "job": {
+      "anyOf": [
+       {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Job"
+     },
+     "problem": {
+      "additionalProperties": true,
+      "title": "Problem",
+      "type": "object"
+     },
+     "result": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/RepairResult"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "scenario_revision_id": {
+      "title": "Scenario Revision Id",
+      "type": "string"
+     },
+     "stale_reason": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Stale Reason"
+     },
+     "status": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Status"
+     }
+    },
+    "required": [
+     "id",
+     "scenario_revision_id",
+     "status",
+     "freshness",
+     "stale_reason",
+     "problem",
+     "result",
+     "job",
+     "candidates"
+    ],
+    "title": "RepairOut",
+    "type": "object"
+   },
+   "RepairResult": {
+    "additionalProperties": false,
+    "properties": {
+     "bound": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Bound"
+     },
+     "candidates": {
+      "default": [],
+      "items": {
+       "$ref": "#/components/schemas/CandidateEvaluation"
+      },
+      "title": "Candidates",
+      "type": "array"
+     },
+     "cost_unit": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Cost Unit"
+     },
+     "detail": {
+      "default": "",
+      "title": "Detail",
+      "type": "string"
+     },
+     "evaluations": {
+      "default": 0,
+      "title": "Evaluations",
+      "type": "integer"
+     },
+     "method": {
+      "title": "Method",
+      "type": "string"
+     },
+     "objective": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Objective"
+     },
+     "rejected": {
+      "default": [],
+      "items": {
+       "$ref": "#/components/schemas/CandidateEvaluation"
+      },
+      "title": "Rejected",
+      "type": "array"
+     },
+     "status": {
+      "$ref": "#/components/schemas/RepairStatus"
+     }
+    },
+    "required": [
+     "status",
+     "method",
+     "cost_unit"
+    ],
+    "title": "RepairResult",
+    "type": "object"
+   },
+   "RepairStatus": {
+    "enum": [
+     "OPTIMAL",
+     "FEASIBLE",
+     "INFEASIBLE",
+     "UNKNOWN",
+     "INVALID_MODEL",
+     "ERROR"
+    ],
+    "title": "RepairStatus",
+    "type": "string"
+   },
+   "ReplayOut": {
+    "properties": {
+     "canonical_input_hash": {
+      "title": "Canonical Input Hash",
+      "type": "string"
+     },
+     "differences": {
+      "items": {
+       "additionalProperties": true,
+       "type": "object"
+      },
+      "title": "Differences",
+      "type": "array"
+     },
+     "matches": {
+      "title": "Matches",
+      "type": "boolean"
+     },
+     "omissions": {
+      "items": {
+       "additionalProperties": true,
+       "type": "object"
+      },
+      "title": "Omissions",
+      "type": "array"
+     },
+     "outcomes": {
+      "additionalProperties": {
+       "type": "string"
+      },
+      "title": "Outcomes",
+      "type": "object"
+     },
+     "provenance": {
+      "additionalProperties": true,
+      "title": "Provenance",
+      "type": "object"
+     },
+     "recorded_verifier_version": {
+      "title": "Recorded Verifier Version",
+      "type": "string"
+     },
+     "verifier_version": {
+      "title": "Verifier Version",
+      "type": "string"
+     }
+    },
+    "required": [
+     "matches",
+     "canonical_input_hash",
+     "verifier_version",
+     "recorded_verifier_version",
+     "outcomes",
+     "differences",
+     "omissions",
+     "provenance"
+    ],
+    "title": "ReplayOut",
+    "type": "object"
+   },
+   "RequirementResult": {
+    "additionalProperties": false,
+    "properties": {
+     "affected_pairs": {
+      "items": {
+       "maxItems": 2,
+       "minItems": 2,
+       "prefixItems": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "string"
+        }
+       ],
+       "type": "array"
+      },
+      "title": "Affected Pairs",
+      "type": "array"
+     },
+     "assumptions": {
+      "default": [],
+      "items": {
+       "type": "string"
+      },
+      "title": "Assumptions",
+      "type": "array"
+     },
+     "outcome": {
+      "$ref": "#/components/schemas/Outcome"
+     },
+     "profile_id": {
+      "title": "Profile Id",
+      "type": "string"
+     },
+     "profile_version": {
+      "title": "Profile Version",
+      "type": "integer"
+     },
+     "requirement_id": {
+      "title": "Requirement Id",
+      "type": "string"
+     },
+     "requirement_version": {
+      "title": "Requirement Version",
+      "type": "integer"
+     },
+     "states": {
+      "items": {
+       "$ref": "#/components/schemas/StateResult"
+      },
+      "title": "States",
+      "type": "array"
+     }
+    },
+    "required": [
+     "requirement_id",
+     "requirement_version",
+     "profile_id",
+     "profile_version",
+     "outcome",
+     "states",
+     "affected_pairs"
+    ],
+    "title": "RequirementResult",
+    "type": "object"
+   },
+   "ResolveFactIn": {
+    "properties": {
+     "fact_id": {
+      "title": "Fact Id",
+      "type": "string"
+     },
+     "rationale": {
+      "minLength": 1,
+      "title": "Rationale",
+      "type": "string"
+     },
+     "reviewer": {
+      "minLength": 1,
+      "title": "Reviewer",
+      "type": "string"
+     },
+     "reviewer_kind": {
+      "enum": [
+       "human_ui",
+       "human_cli",
+       "scripted"
+      ],
+      "title": "Reviewer Kind",
+      "type": "string"
+     },
+     "unit": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Unit"
+     },
+     "value": {
+      "title": "Value"
+     }
+    },
+    "required": [
+     "fact_id",
+     "value",
+     "reviewer",
+     "reviewer_kind",
+     "rationale"
+    ],
+    "title": "ResolveFactIn",
+    "type": "object"
+   },
+   "ResolveFactOut": {
+    "properties": {
+     "fact": {
+      "title": "Fact",
+      "type": "string"
+     },
+     "network_revision": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Network Revision"
+     },
+     "project_revision": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Project Revision"
+     },
+     "resolution": {
+      "additionalProperties": true,
+      "title": "Resolution",
+      "type": "object"
+     },
+     "scenario_revision": {
+      "title": "Scenario Revision",
+      "type": "string"
+     }
+    },
+    "required": [
+     "fact",
+     "scenario_revision",
+     "resolution"
+    ],
+    "title": "ResolveFactOut",
+    "type": "object"
+   },
+   "Restriction": {
+    "additionalProperties": false,
+    "properties": {
+     "effective": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/Interval"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "evidence": {
+      "default": [],
+      "items": {
+       "type": "string"
+      },
+      "title": "Evidence",
+      "type": "array"
+     },
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "kind": {
+      "$ref": "#/components/schemas/RestrictionKind",
+      "default": "closure"
+     },
+     "label": {
+      "default": "",
+      "title": "Label",
+      "type": "string"
+     },
+     "overrides": {
+      "additionalProperties": {
+       "$ref": "#/components/schemas/AttributeValue"
+      },
+      "title": "Overrides",
+      "type": "object"
+     },
+     "phase_ids": {
+      "items": {
+       "type": "string"
+      },
+      "title": "Phase Ids",
+      "type": "array"
+     },
+     "polygon": {
+      "anyOf": [
+       {
+        "items": {
+         "maxItems": 2,
+         "minItems": 2,
+         "prefixItems": [
+          {
+           "type": "number"
+          },
+          {
+           "type": "number"
+          }
+         ],
+         "type": "array"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Polygon"
+     },
+     "state": {
+      "$ref": "#/components/schemas/EvidenceState",
+      "default": "ACCEPTED"
+     },
+     "targets": {
+      "default": [],
+      "items": {
+       "$ref": "#/components/schemas/TargetRelation"
+      },
+      "title": "Targets",
+      "type": "array"
+     }
+    },
+    "required": [
+     "id",
+     "phase_ids"
+    ],
+    "title": "Restriction",
+    "type": "object"
+   },
+   "RestrictionKind": {
+    "enum": [
+     "closure",
+     "attribute_override"
+    ],
+    "title": "RestrictionKind",
+    "type": "string"
+   },
+   "RestrictionWindowOverride": {
+    "additionalProperties": false,
+    "description": "Keep a restriction's target edges open during an interval.",
+    "properties": {
+     "edge_ids": {
+      "items": {
+       "type": "string"
+      },
+      "title": "Edge Ids",
+      "type": "array"
+     },
+     "restriction_id": {
+      "title": "Restriction Id",
+      "type": "string"
+     },
+     "window": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/Interval"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "required": [
+     "restriction_id",
+     "edge_ids"
+    ],
+    "title": "RestrictionWindowOverride",
+    "type": "object"
+   },
+   "ReviewIn": {
+    "properties": {
+     "action": {
+      "enum": [
+       "accept",
+       "reject",
+       "edit"
+      ],
+      "title": "Action",
+      "type": "string"
+     },
+     "edited_value": {
+      "anyOf": [
+       {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Edited Value"
+     },
+     "expected_revision": {
+      "title": "Expected Revision",
+      "type": "integer"
+     },
+     "rationale": {
+      "default": "",
+      "title": "Rationale",
+      "type": "string"
+     },
+     "reviewer": {
+      "minLength": 1,
+      "title": "Reviewer",
+      "type": "string"
+     },
+     "reviewer_kind": {
+      "enum": [
+       "human_ui",
+       "human_cli",
+       "scripted"
+      ],
+      "title": "Reviewer Kind",
+      "type": "string"
+     }
+    },
+    "required": [
+     "action",
+     "expected_revision",
+     "reviewer",
+     "reviewer_kind"
+    ],
+    "title": "ReviewIn",
+    "type": "object"
+   },
+   "ReviewOut": {
+    "properties": {
+     "invalidated_runs": {
+      "title": "Invalidated Runs",
+      "type": "integer"
+     },
+     "observation": {
+      "$ref": "#/components/schemas/ObservationOut"
+     }
+    },
+    "required": [
+     "observation",
+     "invalidated_runs"
+    ],
+    "title": "ReviewOut",
+    "type": "object"
+   },
+   "ReviewQuestion": {
+    "additionalProperties": false,
+    "properties": {
+     "affected": {
+      "items": {
+       "type": "string"
+      },
+      "title": "Affected",
+      "type": "array"
+     },
+     "fact": {
+      "$ref": "#/components/schemas/Fact"
+     },
+     "outcome_if_favorable": {
+      "additionalProperties": {
+       "$ref": "#/components/schemas/Outcome"
+      },
+      "title": "Outcome If Favorable",
+      "type": "object"
+     },
+     "outcome_if_unfavorable": {
+      "additionalProperties": {
+       "$ref": "#/components/schemas/Outcome"
+      },
+      "title": "Outcome If Unfavorable",
+      "type": "object"
+     },
+     "review_cost": {
+      "title": "Review Cost",
+      "type": "number"
+     },
+     "score": {
+      "title": "Score",
+      "type": "number"
+     }
+    },
+    "required": [
+     "fact",
+     "affected",
+     "outcome_if_favorable",
+     "outcome_if_unfavorable",
+     "review_cost",
+     "score"
+    ],
+    "title": "ReviewQuestion",
+    "type": "object"
+   },
+   "Route": {
+    "additionalProperties": false,
+    "properties": {
+     "cost": {
+      "title": "Cost",
+      "type": "number"
+     },
+     "crossings": {
+      "title": "Crossings",
+      "type": "integer"
+     },
+     "length_m": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Length M"
+     },
+     "nodes": {
+      "items": {
+       "type": "string"
+      },
+      "title": "Nodes",
+      "type": "array"
+     },
+     "steps": {
+      "items": {
+       "$ref": "#/components/schemas/RouteStep"
+      },
+      "title": "Steps",
+      "type": "array"
+     }
+    },
+    "required": [
+     "nodes",
+     "steps",
+     "length_m",
+     "cost",
+     "crossings"
+    ],
+    "title": "Route",
+    "type": "object"
+   },
+   "RouteStep": {
+    "additionalProperties": false,
+    "properties": {
+     "checks": {
+      "items": {
+       "$ref": "#/components/schemas/ConstraintCheck"
+      },
+      "title": "Checks",
+      "type": "array"
+     },
+     "edge_class": {
+      "$ref": "#/components/schemas/EdgeClass"
+     },
+     "edge_id": {
+      "title": "Edge Id",
+      "type": "string"
+     },
+     "evidence": {
+      "items": {
+       "type": "string"
+      },
+      "title": "Evidence",
+      "type": "array"
+     },
+     "from_node": {
+      "title": "From Node",
+      "type": "string"
+     },
+     "kind": {
+      "$ref": "#/components/schemas/EdgeKind"
+     },
+     "length_m": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Length M"
+     },
+     "temporary": {
+      "default": false,
+      "title": "Temporary",
+      "type": "boolean"
+     },
+     "to_node": {
+      "title": "To Node",
+      "type": "string"
+     }
+    },
+    "required": [
+     "edge_id",
+     "from_node",
+     "to_node",
+     "kind",
+     "length_m",
+     "edge_class",
+     "checks",
+     "evidence"
+    ],
+    "title": "RouteStep",
+    "type": "object"
+   },
+   "Scenario": {
+    "additionalProperties": false,
+    "properties": {
+     "added_restrictions": {
+      "default": [],
+      "items": {
+       "$ref": "#/components/schemas/AddedRestriction"
+      },
+      "title": "Added Restrictions",
+      "type": "array"
+     },
+     "disabled_restriction_windows": {
+      "default": [],
+      "items": {
+       "$ref": "#/components/schemas/RestrictionWindowOverride"
+      },
+      "title": "Disabled Restriction Windows",
+      "type": "array"
+     },
+     "display_timezone": {
+      "default": "UTC",
+      "title": "Display Timezone",
+      "type": "string"
+     },
+     "enabled_temporary_connections": {
+      "default": [],
+      "items": {
+       "type": "string"
+      },
+      "title": "Enabled Temporary Connections",
+      "type": "array"
+     },
+     "horizon": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/Interval"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "hypothetical": {
+      "default": false,
+      "title": "Hypothetical",
+      "type": "boolean"
+     },
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "label": {
+      "title": "Label",
+      "type": "string"
+     },
+     "mode": {
+      "enum": [
+       "phases",
+       "dated"
+      ],
+      "title": "Mode",
+      "type": "string"
+     },
+     "phase_shifts": {
+      "additionalProperties": {
+       "type": "integer"
+      },
+      "title": "Phase Shifts",
+      "type": "object"
+     },
+     "project_ids": {
+      "items": {
+       "type": "string"
+      },
+      "title": "Project Ids",
+      "type": "array"
+     },
+     "revision_id": {
+      "title": "Revision Id",
+      "type": "string"
+     },
+     "states": {
+      "default": [],
+      "items": {
+       "$ref": "#/components/schemas/StateSpec"
+      },
+      "title": "States",
+      "type": "array"
+     }
+    },
+    "required": [
+     "id",
+     "revision_id",
+     "label",
+     "mode",
+     "project_ids"
+    ],
+    "title": "Scenario",
+    "type": "object"
+   },
+   "ScenarioCreate": {
+    "properties": {
+     "id": {
+      "pattern": "^[a-z0-9][a-z0-9-]{1,60}$",
+      "title": "Id",
+      "type": "string"
+     },
+     "network_lineage_id": {
+      "title": "Network Lineage Id",
+      "type": "string"
+     },
+     "requirement_ids": {
+      "items": {
+       "type": "string"
+      },
+      "title": "Requirement Ids",
+      "type": "array"
+     },
+     "scenario": {
+      "$ref": "#/components/schemas/Scenario"
+     },
+     "title": {
+      "title": "Title",
+      "type": "string"
+     }
+    },
+    "required": [
+     "id",
+     "title",
+     "network_lineage_id",
+     "scenario",
+     "requirement_ids"
+    ],
+    "title": "ScenarioCreate",
+    "type": "object"
+   },
+   "ScenarioOut": {
+    "properties": {
+     "head_revision_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Head Revision Id"
+     },
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "network_lineage_id": {
+      "title": "Network Lineage Id",
+      "type": "string"
+     },
+     "revisions": {
+      "items": {
+       "additionalProperties": true,
+       "type": "object"
+      },
+      "title": "Revisions",
+      "type": "array"
+     },
+     "title": {
+      "title": "Title",
+      "type": "string"
+     }
+    },
+    "required": [
+     "id",
+     "title",
+     "network_lineage_id",
+     "head_revision_id",
+     "revisions"
+    ],
+    "title": "ScenarioOut",
+    "type": "object"
+   },
+   "ScenarioRevisionOut": {
+    "properties": {
+     "branch_of": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Branch Of"
+     },
+     "created_at": {
+      "title": "Created At",
+      "type": "string"
+     },
+     "hypothetical": {
+      "title": "Hypothetical",
+      "type": "boolean"
+     },
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "is_head": {
+      "title": "Is Head",
+      "type": "boolean"
+     },
+     "network_revision_id": {
+      "title": "Network Revision Id",
+      "type": "string"
+     },
+     "number": {
+      "title": "Number",
+      "type": "integer"
+     },
+     "outdated_inputs": {
+      "items": {
+       "type": "string"
+      },
+      "title": "Outdated Inputs",
+      "type": "array"
+     },
+     "pinned_inputs_current": {
+      "title": "Pinned Inputs Current",
+      "type": "boolean"
+     },
+     "profiles": {
+      "items": {
+       "$ref": "#/components/schemas/MobilityProfile"
+      },
+      "title": "Profiles",
+      "type": "array"
+     },
+     "project_revision_ids": {
+      "items": {
+       "type": "string"
+      },
+      "title": "Project Revision Ids",
+      "type": "array"
+     },
+     "requirement_refs": {
+      "items": {
+       "maxItems": 2,
+       "minItems": 2,
+       "prefixItems": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "integer"
+        }
+       ],
+       "type": "array"
+      },
+      "title": "Requirement Refs",
+      "type": "array"
+     },
+     "requirements": {
+      "items": {
+       "$ref": "#/components/schemas/AccessRequirement"
+      },
+      "title": "Requirements",
+      "type": "array"
+     },
+     "scenario": {
+      "$ref": "#/components/schemas/Scenario"
+     },
+     "scenario_id": {
+      "title": "Scenario Id",
+      "type": "string"
+     }
+    },
+    "required": [
+     "id",
+     "scenario_id",
+     "number",
+     "is_head",
+     "hypothetical",
+     "branch_of",
+     "scenario",
+     "network_revision_id",
+     "project_revision_ids",
+     "requirement_refs",
+     "requirements",
+     "profiles",
+     "pinned_inputs_current",
+     "outdated_inputs",
+     "created_at"
+    ],
+    "title": "ScenarioRevisionOut",
+    "type": "object"
+   },
+   "ScenarioUpdate": {
+    "properties": {
+     "expected_head": {
+      "title": "Expected Head",
+      "type": "string"
+     },
+     "requirement_ids": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "string"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Requirement Ids"
+     },
+     "scenario": {
+      "$ref": "#/components/schemas/Scenario"
+     }
+    },
+    "required": [
+     "expected_head",
+     "scenario"
+    ],
+    "title": "ScenarioUpdate",
+    "type": "object"
+   },
+   "SheetOut": {
+    "properties": {
+     "calibrations": {
+      "items": {
+       "$ref": "#/components/schemas/CalibrationOut"
+      },
+      "title": "Calibrations",
+      "type": "array"
+     },
+     "crops": {
+      "items": {
+       "$ref": "#/components/schemas/CropOut"
+      },
+      "title": "Crops",
+      "type": "array"
+     },
+     "height_pt": {
+      "title": "Height Pt",
+      "type": "number"
+     },
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "page_index": {
+      "title": "Page Index",
+      "type": "integer"
+     },
+     "plan_revision_id": {
+      "title": "Plan Revision Id",
+      "type": "string"
+     },
+     "printed_sheet_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Printed Sheet Id"
+     },
+     "render_dpi": {
+      "title": "Render Dpi",
+      "type": "integer"
+     },
+     "render_height_px": {
+      "title": "Render Height Px",
+      "type": "integer"
+     },
+     "render_width_px": {
+      "title": "Render Width Px",
+      "type": "integer"
+     },
+     "rotation": {
+      "title": "Rotation",
+      "type": "integer"
+     },
+     "vector_summary": {
+      "additionalProperties": true,
+      "title": "Vector Summary",
+      "type": "object"
+     },
+     "width_pt": {
+      "title": "Width Pt",
+      "type": "number"
+     },
+     "word_count": {
+      "title": "Word Count",
+      "type": "integer"
+     }
+    },
+    "required": [
+     "id",
+     "plan_revision_id",
+     "page_index",
+     "printed_sheet_id",
+     "width_pt",
+     "height_pt",
+     "rotation",
+     "render_dpi",
+     "render_width_px",
+     "render_height_px",
+     "vector_summary",
+     "word_count",
+     "crops",
+     "calibrations"
+    ],
+    "title": "SheetOut",
+    "type": "object"
+   },
+   "ShiftOption": {
+    "additionalProperties": false,
+    "properties": {
+     "cost": {
+      "minimum": 0.0,
+      "title": "Cost",
+      "type": "number"
+     },
+     "seconds": {
+      "title": "Seconds",
+      "type": "integer"
+     }
+    },
+    "required": [
+     "seconds",
+     "cost"
+    ],
+    "title": "ShiftOption",
+    "type": "object"
+   },
+   "StateBasis": {
+    "enum": [
+     "baseline",
+     "project_isolated",
+     "declared_concurrent",
+     "schedule"
+    ],
+    "title": "StateBasis",
+    "type": "string"
+   },
+   "StateResult": {
+    "additionalProperties": false,
+    "properties": {
+     "active": {
+      "additionalProperties": {
+       "type": "string"
+      },
+      "title": "Active",
+      "type": "object"
+     },
+     "basis": {
+      "$ref": "#/components/schemas/StateBasis"
+     },
+     "hypothetical": {
+      "default": false,
+      "title": "Hypothetical",
+      "type": "boolean"
+     },
+     "interval": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/Interval"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "label": {
+      "title": "Label",
+      "type": "string"
+     },
+     "outcome": {
+      "$ref": "#/components/schemas/Outcome"
+     },
+     "pairs": {
+      "items": {
+       "$ref": "#/components/schemas/PairResult"
+      },
+      "title": "Pairs",
+      "type": "array"
+     }
+    },
+    "required": [
+     "label",
+     "basis",
+     "active",
+     "outcome",
+     "pairs"
+    ],
+    "title": "StateResult",
+    "type": "object"
+   },
+   "StateSpec": {
+    "additionalProperties": false,
+    "description": "A selection of active phases (undated mode).",
+    "properties": {
+     "active": {
+      "additionalProperties": {
+       "type": "string"
+      },
+      "title": "Active",
+      "type": "object"
+     },
+     "basis": {
+      "$ref": "#/components/schemas/StateBasis"
+     },
+     "label": {
+      "title": "Label",
+      "type": "string"
+     }
+    },
+    "required": [
+     "label",
+     "active",
+     "basis"
+    ],
+    "title": "StateSpec",
+    "type": "object"
+   },
+   "TargetRelation": {
+    "additionalProperties": false,
+    "description": "A reviewed or proposed link between a restriction and an edge.",
+    "properties": {
+     "edge_id": {
+      "title": "Edge Id",
+      "type": "string"
+     },
+     "evidence": {
+      "default": [],
+      "items": {
+       "type": "string"
+      },
+      "title": "Evidence",
+      "type": "array"
+     },
+     "state": {
+      "$ref": "#/components/schemas/EvidenceState",
+      "default": "ACCEPTED"
+     }
+    },
+    "required": [
+     "edge_id"
+    ],
+    "title": "TargetRelation",
+    "type": "object"
+   },
+   "TemporaryConnection": {
+    "additionalProperties": false,
+    "properties": {
+     "active_by_default": {
+      "default": true,
+      "title": "Active By Default",
+      "type": "boolean"
+     },
+     "edge": {
+      "$ref": "#/components/schemas/Edge"
+     },
+     "effective": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/Interval"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "evidence": {
+      "default": [],
+      "items": {
+       "type": "string"
+      },
+      "title": "Evidence",
+      "type": "array"
+     },
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "phase_ids": {
+      "items": {
+       "type": "string"
+      },
+      "title": "Phase Ids",
+      "type": "array"
+     },
+     "state": {
+      "$ref": "#/components/schemas/EvidenceState",
+      "default": "ACCEPTED"
+     }
+    },
+    "required": [
+     "id",
+     "phase_ids",
+     "edge"
+    ],
+    "title": "TemporaryConnection",
+    "type": "object"
+   },
+   "ValidationError": {
+    "properties": {
+     "ctx": {
+      "title": "Context",
+      "type": "object"
+     },
+     "input": {
+      "title": "Input"
+     },
+     "loc": {
+      "items": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "integer"
+        }
+       ]
+      },
+      "title": "Location",
+      "type": "array"
+     },
+     "msg": {
+      "title": "Message",
+      "type": "string"
+     },
+     "type": {
+      "title": "Error Type",
+      "type": "string"
+     }
+    },
+    "required": [
+     "loc",
+     "msg",
+     "type"
+    ],
+    "title": "ValidationError",
+    "type": "object"
+   }
+  }
+ },
+ "info": {
+  "description": "Local analysis of pedestrian access through construction phases. Results describe the reviewed model and its coverage, not real-world safety or legal compliance.",
+  "title": "Ghost Routes API",
+  "version": "0.1.0"
+ },
+ "openapi": "3.1.0",
+ "paths": {
+  "/api/analysis-runs/{run_id}": {
+   "get": {
+    "operationId": "getAnalysisRun",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "run_id",
+      "required": true,
+      "schema": {
+       "title": "Run Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AnalysisRunOut"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Run"
+   }
+  },
+  "/api/analysis-runs/{run_id}/bundle": {
+   "get": {
+    "operationId": "exportBundle",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "run_id",
+      "required": true,
+      "schema": {
+       "title": "Run Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/zip": {}
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Export Bundle"
+   }
+  },
+  "/api/bundles/replay": {
+   "post": {
+    "operationId": "replayBundle",
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_replayBundle"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ReplayOut"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Replay Bundle"
+   }
+  },
+  "/api/diff/{kind}": {
+   "get": {
+    "operationId": "getDiff",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "kind",
+      "required": true,
+      "schema": {
+       "title": "Kind",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "from_id",
+      "required": true,
+      "schema": {
+       "title": "From Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "to_id",
+      "required": true,
+      "schema": {
+       "title": "To Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/DiffOut"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Diff"
+   }
+  },
+  "/api/health": {
+   "get": {
+    "operationId": "health",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "string"
+         },
+         "title": "Response Health",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Health"
+   }
+  },
+  "/api/jobs": {
+   "get": {
+    "operationId": "listJobs",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "schema": {
+       "default": 50,
+       "maximum": 200,
+       "title": "Limit",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "offset",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "title": "Offset",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/JobOut"
+         },
+         "title": "Response Listjobs",
+         "type": "array"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Jobs"
+   }
+  },
+  "/api/jobs/{job_id}": {
+   "get": {
+    "operationId": "getJob",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "job_id",
+      "required": true,
+      "schema": {
+       "title": "Job Id",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/JobOut"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Job"
+   }
+  },
+  "/api/jobs/{job_id}/cancel": {
+   "post": {
+    "operationId": "cancelJob",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "job_id",
+      "required": true,
+      "schema": {
+       "title": "Job Id",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/JobOut"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Cancel Job"
+   }
+  },
+  "/api/network-revisions/{revision_id}": {
+   "get": {
+    "operationId": "getNetworkRevision",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "revision_id",
+      "required": true,
+      "schema": {
+       "title": "Revision Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Getnetworkrevision",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Network Revision"
+   }
+  },
+  "/api/networks": {
+   "get": {
+    "operationId": "listNetworks",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/NetworkLineageOut"
+         },
+         "title": "Response Listnetworks",
+         "type": "array"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "List Networks"
+   }
+  },
+  "/api/networks/{lineage_id}/build": {
+   "post": {
+    "operationId": "buildNetwork",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "lineage_id",
+      "required": true,
+      "schema": {
+       "title": "Lineage Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/BuildNetworkIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Buildnetwork",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Build Network"
+   }
+  },
+  "/api/observations/{observation_id}": {
+   "get": {
+    "operationId": "getObservation",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "observation_id",
+      "required": true,
+      "schema": {
+       "title": "Observation Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ObservationOut"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Observation"
+   }
+  },
+  "/api/observations/{observation_id}/decisions": {
+   "get": {
+    "operationId": "listDecisions",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "observation_id",
+      "required": true,
+      "schema": {
+       "title": "Observation Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/DecisionOut"
+         },
+         "title": "Response Listdecisions",
+         "type": "array"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Decisions"
+   }
+  },
+  "/api/observations/{observation_id}/review": {
+   "post": {
+    "operationId": "reviewObservation",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "observation_id",
+      "required": true,
+      "schema": {
+       "title": "Observation Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ReviewIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ReviewOut"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Review"
+   }
+  },
+  "/api/profiles": {
+   "get": {
+    "operationId": "listProfiles",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/MobilityProfile"
+         },
+         "title": "Response Listprofiles",
+         "type": "array"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "List Profiles"
+   },
+   "post": {
+    "operationId": "saveProfile",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/MobilityProfile"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/MobilityProfile"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Save Profile"
+   }
+  },
+  "/api/profiles/{profile_id}/review": {
+   "post": {
+    "operationId": "reviewProfile",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "profile_id",
+      "required": true,
+      "schema": {
+       "title": "Profile Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ProfileReviewIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/MobilityProfile"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Review Profile"
+   }
+  },
+  "/api/profiles/{profile_id}/versions": {
+   "get": {
+    "operationId": "listProfileVersions",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "profile_id",
+      "required": true,
+      "schema": {
+       "title": "Profile Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/MobilityProfile"
+         },
+         "title": "Response Listprofileversions",
+         "type": "array"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Profile Versions"
+   }
+  },
+  "/api/project-revisions/{revision_id}": {
+   "get": {
+    "operationId": "getProjectRevision",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "revision_id",
+      "required": true,
+      "schema": {
+       "title": "Revision Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Getprojectrevision",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Project Revision"
+   }
+  },
+  "/api/projects": {
+   "get": {
+    "operationId": "listProjects",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/ProjectOut"
+         },
+         "title": "Response Listprojects",
+         "type": "array"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "List Projects"
+   }
+  },
+  "/api/projects/{project_id}": {
+   "get": {
+    "operationId": "getProject",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "project_id",
+      "required": true,
+      "schema": {
+       "title": "Project Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ProjectOut"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Project"
+   }
+  },
+  "/api/readiness": {
+   "get": {
+    "operationId": "getReadiness",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ReadinessOut"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Get Readiness"
+   }
+  },
+  "/api/repairs/{run_id}": {
+   "get": {
+    "operationId": "getRepair",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "run_id",
+      "required": true,
+      "schema": {
+       "title": "Run Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/RepairOut"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Repair"
+   }
+  },
+  "/api/requirements": {
+   "get": {
+    "operationId": "listRequirements",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/AccessRequirement"
+         },
+         "title": "Response Listrequirements",
+         "type": "array"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "List Requirements"
+   },
+   "post": {
+    "operationId": "saveRequirement",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/AccessRequirement"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AccessRequirement"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Save Requirement"
+   }
+  },
+  "/api/scenario-revisions/{revision_id}": {
+   "get": {
+    "operationId": "getScenarioRevision",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "revision_id",
+      "required": true,
+      "schema": {
+       "title": "Revision Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ScenarioRevisionOut"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Scenario Revision"
+   }
+  },
+  "/api/scenario-revisions/{revision_id}/analysis": {
+   "get": {
+    "operationId": "getLatestAnalysis",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "revision_id",
+      "required": true,
+      "schema": {
+       "title": "Revision Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "anyOf": [
+          {
+           "$ref": "#/components/schemas/AnalysisRunOut"
+          },
+          {
+           "type": "null"
+          }
+         ],
+         "title": "Response Getlatestanalysis"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Latest Analysis"
+   }
+  },
+  "/api/scenario-revisions/{revision_id}/analyze": {
+   "post": {
+    "operationId": "requestAnalysis",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "revision_id",
+      "required": true,
+      "schema": {
+       "title": "Revision Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/JobRef"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Analyze"
+   }
+  },
+  "/api/scenario-revisions/{revision_id}/geometry": {
+   "get": {
+    "operationId": "getScenarioGeometry",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "revision_id",
+      "required": true,
+      "schema": {
+       "title": "Revision Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/GeometryOut"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Geometry"
+   }
+  },
+  "/api/scenario-revisions/{revision_id}/questions": {
+   "get": {
+    "operationId": "getQuestions",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "revision_id",
+      "required": true,
+      "schema": {
+       "title": "Revision Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/QuestionsOut"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Questions"
+   }
+  },
+  "/api/scenario-revisions/{revision_id}/repairs": {
+   "get": {
+    "operationId": "listRepairs",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "revision_id",
+      "required": true,
+      "schema": {
+       "title": "Revision Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/RepairOut"
+         },
+         "title": "Response Listrepairs",
+         "type": "array"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Repairs"
+   },
+   "post": {
+    "operationId": "requestRepair",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "revision_id",
+      "required": true,
+      "schema": {
+       "title": "Revision Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RepairIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/JobRef"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Request Repair"
+   }
+  },
+  "/api/scenario-revisions/{revision_id}/resolve-fact": {
+   "post": {
+    "operationId": "resolveFact",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "revision_id",
+      "required": true,
+      "schema": {
+       "title": "Revision Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ResolveFactIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ResolveFactOut"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Resolve Fact"
+   }
+  },
+  "/api/scenario-revisions/{revision_id}/runs": {
+   "get": {
+    "operationId": "listRuns",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "revision_id",
+      "required": true,
+      "schema": {
+       "title": "Revision Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/AnalysisRunOut"
+         },
+         "title": "Response Listruns",
+         "type": "array"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Runs"
+   }
+  },
+  "/api/scenarios": {
+   "get": {
+    "operationId": "listScenarios",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/ScenarioOut"
+         },
+         "title": "Response Listscenarios",
+         "type": "array"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "List Scenarios"
+   },
+   "post": {
+    "operationId": "createScenario",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ScenarioCreate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ScenarioRevisionOut"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Create Scenario"
+   }
+  },
+  "/api/scenarios/{scenario_id}/rebase": {
+   "post": {
+    "operationId": "rebaseScenario",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "scenario_id",
+      "required": true,
+      "schema": {
+       "title": "Scenario Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ScenarioRevisionOut"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Rebase"
+   }
+  },
+  "/api/scenarios/{scenario_id}/revisions": {
+   "post": {
+    "operationId": "updateScenario",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "scenario_id",
+      "required": true,
+      "schema": {
+       "title": "Scenario Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ScenarioUpdate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ScenarioRevisionOut"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Update Scenario"
+   }
+  },
+  "/api/sheets/{sheet_id}": {
+   "get": {
+    "operationId": "getSheet",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "sheet_id",
+      "required": true,
+      "schema": {
+       "title": "Sheet Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SheetOut"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Sheet"
+   }
+  },
+  "/api/sheets/{sheet_id}/calibrations": {
+   "post": {
+    "operationId": "calibrateSheet",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "sheet_id",
+      "required": true,
+      "schema": {
+       "title": "Sheet Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CalibrationIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Calibratesheet",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Calibrate"
+   }
+  },
+  "/api/sheets/{sheet_id}/extraction-runs": {
+   "get": {
+    "operationId": "listExtractionRuns",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "sheet_id",
+      "required": true,
+      "schema": {
+       "title": "Sheet Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/ExtractionRunOut"
+         },
+         "title": "Response Listextractionruns",
+         "type": "array"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Extraction Runs"
+   }
+  },
+  "/api/sheets/{sheet_id}/extractions": {
+   "post": {
+    "operationId": "requestExtraction",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "sheet_id",
+      "required": true,
+      "schema": {
+       "title": "Sheet Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "anyOf": [
+         {
+          "items": {
+           "type": "string"
+          },
+          "type": "array"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Crop Ids"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/JobRef"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Request Extraction"
+   }
+  },
+  "/api/sheets/{sheet_id}/observations": {
+   "get": {
+    "operationId": "listObservations",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "sheet_id",
+      "required": true,
+      "schema": {
+       "title": "Sheet Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "cls",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Cls"
+      }
+     },
+     {
+      "in": "query",
+      "name": "review_state",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Review State"
+      }
+     },
+     {
+      "in": "query",
+      "name": "provenance",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Provenance"
+      }
+     },
+     {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "schema": {
+       "default": 100,
+       "maximum": 500,
+       "minimum": 1,
+       "title": "Limit",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "offset",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "minimum": 0,
+       "title": "Offset",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ObservationPage"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Observations"
+   },
+   "post": {
+    "operationId": "createObservation",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "sheet_id",
+      "required": true,
+      "schema": {
+       "title": "Sheet Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ObservationCreate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ObservationOut"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Create Observation"
+   }
+  },
+  "/api/sheets/{sheet_id}/render": {
+   "get": {
+    "operationId": "getSheetRender",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "sheet_id",
+      "required": true,
+      "schema": {
+       "title": "Sheet Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "image/png": {}
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Sheet Render"
+   }
+  },
+  "/api/sheets/{sheet_id}/words": {
+   "get": {
+    "operationId": "getSheetWords",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "sheet_id",
+      "required": true,
+      "schema": {
+       "title": "Sheet Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "additionalProperties": true,
+          "type": "object"
+         },
+         "title": "Response Getsheetwords",
+         "type": "array"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Sheet Words"
+   }
+  },
+  "/api/sources": {
+   "post": {
+    "operationId": "uploadSource",
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_uploadSource"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Uploadsource",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Upload Source"
+   }
+  }
+ }
+}
