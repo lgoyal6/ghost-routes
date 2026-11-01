@@ -1,0 +1,58 @@
+[project]
+name = "ghost-routes-workspace"
+version = "0.1.0"
+requires-python = ">=3.13,<3.14"
+dependencies = ["ghost-routes"]
+
+[tool.uv.workspace]
+members = ["packages/backend"]
+
+[tool.uv.sources]
+ghost-routes = { workspace = true }
+
+[dependency-groups]
+dev = [
+  "pytest>=8.3",
+  "hypothesis>=6.120",
+  "ruff>=0.8",
+  "mypy>=1.13",
+  "httpx>=0.28",
+  "types-shapely<2.1.0.20261017",
+  "types-networkx<3.6.1.20261017",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+  "integration: needs PostgreSQL/PostGIS",
+  "live_model: needs a running Ollama with the vision model",
+  "e2e: browser tests",
+]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 130
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "PERF", "BLE"]
+# Style-only rules that would churn working code without catching defects.
+ignore = ["E501", "RUF005", "SIM102", "SIM105", "SIM108", "PERF401"]
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["fastapi.File", "fastapi.Form", "fastapi.Depends", "fastapi.Query", "typer.Option", "typer.Argument"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["ghost_routes", "tests"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["BLE001"]
+
+[tool.mypy]
+python_version = "3.13"
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+# pypdfium2 and ortools ship no type information.
+module = ["pypdfium2", "pypdfium2.*", "ortools.*"]
+ignore_missing_imports = true
