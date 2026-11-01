@@ -1,6 +1,6 @@
 # Benchmark
 
-`make benchmark` runs `ghost-routes benchmark`, which scores four baselines against a fixed manifest and writes a report to `~/.local/state/ghost-routes/benchmarks/runs/<timestamp>/` (`report.md` and `report.json`). The command exits non-zero if a declared threshold is not met.
+`make benchmark` runs `ghost-routes benchmark`, which scores five baselines against a fixed manifest and writes a report to `~/.local/state/ghost-routes/benchmarks/runs/<timestamp>/` (`report.md` and `report.json`). The command exits non-zero if a declared threshold is not met.
 
 ## Inputs
 
@@ -22,11 +22,14 @@ The real Iowa sheet J.01 is listed but not scored: no human-checked labels exist
 | Baseline | What it is | Needs the model |
 | --- | --- | --- |
 | `native_text` | Rules over native PDF text only. Cannot propose path or barrier geometry or place names; those groups are reported as unsupported, not dropped. | no |
+| `native_vector` | Native PDF strokes classified by legend samples, or fences formed by strokes interleaved with X glyphs. Geometry remains pending review. | no |
 | `raw_vlm` | The model's JSON taken at face value: no anchoring, phase or dimension checks. | yes |
 | `full_pipeline` | The same model responses through the validator used in production. | yes |
 | `manual_graph` | Hand-built graphs with known outcomes through the same verifier and repair engine. Isolates extraction error from verification error; it is not evidence that extraction works. | no |
 
-`raw_vlm` and `full_pipeline` share one inference per crop, cached under `~/.local/state/ghost-routes/benchmarks/cache/` and keyed by the crop image, model digest, prompt and options. `ghost-routes benchmark --no-live` runs the two no-model baselines and reports the model baselines as not run.
+`raw_vlm` and `full_pipeline` share one inference per crop, cached under `~/.local/state/ghost-routes/benchmarks/cache/` and keyed by the crop image, model digest, prompt and options. `ghost-routes benchmark --no-live` runs the three no-model baselines and reports the model baselines as not run. `--cached-only` scores all baselines using existing responses and fails on a missing response without calling inference. It checks the installed model digest through Ollama's read-only status endpoints. Reports identify cache-only mode explicitly.
+
+For the full pipeline, native geometry replaces model geometry for each class proposed by vectors on that sheet. It does not establish complete extraction coverage. Styles, phase callouts and inferred geometry all remain proposals for a reviewer, and scanned sheets without vector strokes cannot use this baseline.
 
 ## Metrics
 
@@ -51,6 +54,7 @@ Model self-confidence is not used anywhere: it is not a calibrated probability.
 Declared in the manifest before any held-out evaluation:
 - `manual_graph`: status correctness 1.0, and zero false-supported outcomes.
 - `full_pipeline` on held-out sheets: zero false connections, phase-text recall at least 0.6, and note recall at least 0.5.
+- Added before vector implementation/evaluation: path and barrier precision and recall at least 0.8 each, median geometry error at most 1 m for each geometry group with matches, and phase assignment at least 0.9. The manifest history records that the earlier model outputs had already been seen.
 
 Changing inputs, labels or thresholds means editing `HISTORY` in `ghost_routes/benchmark/manifest.py` with whether any model result had been seen, then running `ghost-routes benchmark --write-manifest`. A unit test fails if the tracked manifest drifts from the generator.
 
@@ -78,3 +82,18 @@ What this shows:
 - **The thresholds were met, but they were weak.** They measured recall and false connections, not precision or geometry. The manifest history records this note, written after the results were seen. The thresholds themselves were not changed.
 
 The full report is in `~/.local/state/ghost-routes/benchmarks/runs/`.
+
+## Native vector follow-up (2026-10-31 PDT)
+
+A fresh cache-only run replayed all 24 crop responses from the same model digest, prompt and settings. No inference was permitted. On the three held-out synthetic sheets:
+
+| Group | Native vectors TP / FP / FN | Full pipeline TP / FP / FN | Median geometry error |
+| --- | --- | --- | --- |
+| Paths | 21 / 0 / 0 | 21 / 0 / 0 | 0 m |
+| Barriers | 7 / 0 / 0 | 7 / 0 / 0 | 0 m |
+
+Native barrier phase assignment is 7 of 7; the full pipeline's scored phase assignments are 19 of 19. There are zero false connections. Correction burden falls from the earlier pipeline's 77 to 34 actions. All 11 declared thresholds pass. Text metrics remain unchanged, including 20 false phase-text proposals. The dev sheet still has one false path proposal from the model's crossing class.
+
+These four sheets come from one synthetic generator with explicit line conventions. This demonstrates those conventions, not general real-plan accuracy. Re-reading the Iowa source yields three native fence candidates and no path candidates; it remains unscored because it has no human-checked labels.
+
+Integration checks cover valid PostGIS selection boxes for horizontal/vertical lines and revalidation of old model runs after vector proposals are added. Revalidation preserves any run with review activity. A regression case ensures a phase callout's leader cannot also label an unrelated nearby fence; leaderless fallback phases stay flagged.

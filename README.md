@@ -14,21 +14,25 @@ The backend, the browser studio and the benchmark are implemented and tested. Th
 | Repair search (enumeration and CP-SAT, protected requirements, fresh recheck) | implemented | 7 synthetic repair cases match brute-force optima |
 | PostGIS persistence, revisions, review concurrency, stale results, durable jobs | implemented | integration tests on a throwaway database, including lease fencing |
 | HTTP API (loopback only, structured errors, OpenAPI) | implemented | API integration tests through the flagship flow |
-| PDF ingest, rendering, crops, calibration | implemented | Iowa sheet J.01 ingested; scale taken from the graphic scale bar |
+| PDF ingest, rendering, crops, calibration, native vector proposals | implemented | legend-bound paths and barriers on synthetic sheets; three drawn fence candidates on Iowa J.01 |
 | Live vision-model extraction | implemented, run on Iowa | 6 of 6 crops succeeded with `qwen2.5vl:7b` (digest `5ced39df…`) |
 | Portable bundles with deterministic replay | implemented | byte-identical re-export; replay matches |
 | Web studio (React, TypeScript, types generated from OpenAPI) | implemented | 8 Playwright tests: the flagship workflow with axe checks, plus one real extraction started from the studio |
-| Benchmark (4 baselines, fixed manifest) | implemented, run live | the model reads text well but its geometry fails; see [docs/benchmark.md](docs/benchmark.md) |
+| Benchmark (5 baselines, fixed manifest) | implemented, live responses cached | native vectors recover the synthetic geometry the model misses; see [docs/benchmark.md](docs/benchmark.md) |
 
 Run on 2026-10-31: `make test` passes 84 tests, `make test-integration` passes 22, `make test-live-model` passes (one real inference, 47 s), and `make test-e2e` passes 8, including the live extraction.
 
+The vector branch was checked again with 93 unit tests, 25 PostGIS integration tests, 8 browser tests without live inference, lint/type checks, a production frontend build, and a cache-only benchmark. No new inference was run during that verification. The earlier live-model results above describe the core build, not a fresh live-model check of this branch.
+
 ### What the benchmark shows
 
-On the held-out synthetic sheets, the full pipeline found every note and 12 of 13 phase-text items, with every phase assignment correct. Its precision is poor (20 false phase-text proposals), and it found none of the 28 path and barrier lines. The validator halves the raw model's false phase-text proposals and corrects a dimension value, but it cannot supply missing geometry. On hand-built graphs, the verifier got 15 of 15 outcomes right, with no false "supported" results.
+The raw model found none of the 28 held-out synthetic path and barrier lines. The pipeline now reads the PDF's own strokes, binds their styles to a nearby legend, and proposes 21 of 21 paths and 7 of 7 barriers with no geometry false positives on those sheets. Barriers get a phase from a leader or a flagged nearby callout. Every proposal still needs review. This is a small generated benchmark, not measured accuracy on unseen real construction plans.
+
+Text extraction still has poor precision: the full pipeline finds every note and 12 of 13 phase-text items, but retains 20 false phase-text proposals. Its correction burden drops from 77 to 34 actions after adding native geometry. On hand-built graphs, the verifier gets 15 of 15 outcomes right, with no false "supported" results. The cache-only benchmark reuses all 24 earlier crop responses and does not call inference.
 
 ### What the live model did on the Iowa sheet
 
-The model read the sheet: its boxes line up with the printed notes. But it never filled in the line ids it was asked to cite. The validator therefore anchors uncited text proposals to the native PDF lines inside their box, and marks those anchors `inferred_from_bbox`. Of the 71 proposals, 59 are anchored this way and 12 have no text anchor. 25 keep a phase reference that their text supports, and 39 phase references were rejected as unsupported. The model proposed only 3 path and 2 barrier geometries for the whole sheet, so most of the Iowa network has to be built by a reviewer. Every proposal stays pending until a reviewer acts on it.
+The model read the sheet: its boxes line up with the printed notes. But it never filled in the line ids it was asked to cite. The validator therefore anchors uncited text proposals to the native PDF lines inside their box, and marks those anchors `inferred_from_bbox`. Of the original 71 validated proposals, 59 were anchored this way and 12 had no text anchor. 25 kept a phase reference their text supported, and 39 phase references were rejected as unsupported. The model proposed only 3 paths and 2 barriers. Native vector extraction separately finds three fence candidates from lines interleaved with X symbols, but no paths. These counts are not real-plan accuracy measurements. Most of the Iowa network still needs a reviewer.
 
 ## Quick start
 
@@ -51,11 +55,13 @@ The API serves interactive docs at `http://127.0.0.1:8077/docs`. `make stop` sto
 | `make test-live-model` | one real inference on a synthetic sheet; fails, never skips, if Ollama or the model is missing |
 | `make lint` | ruff and mypy |
 | `make test-e2e` | browser suite on an isolated stack, including one live extraction from the studio (`npm --prefix apps/web run e2e:offline` skips that one explicitly) |
-| `make benchmark` | fixed-manifest benchmark with all four baselines; `uv run ghost-routes benchmark --no-live` runs only the two that need no model |
+| `make benchmark` | fixed-manifest benchmark with all five baselines; `uv run ghost-routes benchmark --no-live` runs the three that need no model |
+| `uv run ghost-routes benchmark --cached-only` | evaluate stored model responses; fail on a cache miss without inference; reads the installed model digest from Ollama |
 | `make verify` | every required check; fails if any is missing |
-| `uv run ghost-routes ingest <pdf> ...` | hash, render and crop a sheet; store native text observations |
+| `uv run ghost-routes ingest <pdf> ...` | hash, render and crop a sheet; store native text and vector proposals |
+| `uv run ghost-routes vectorize <sheet>` | add native path/barrier proposals to a previously ingested sheet; no inference |
 | `uv run ghost-routes extract <sheet>` | run live extraction on every crop of a sheet; reruns reuse finished crops |
-| `uv run ghost-routes revalidate <sheet>` | re-derive observations from stored model responses with the current validator; no inference |
+| `uv run ghost-routes revalidate <sheet>` | re-derive pending observations from stored responses and the current geometry policy; preserve runs with review activity; no inference |
 | `uv run ghost-routes analyze <scenario-revision>` | queue and run an analysis |
 | `uv run ghost-routes bundle export\|replay\|import\|synthetic` | portable result bundles |
 

@@ -15,7 +15,9 @@ from ghost_routes.benchmark.evaluate import Tolerances, aggregate, score_sheet
 from ghost_routes.config import get_settings
 from ghost_routes.documents.pdf import inspect_pdf, render_page, tiles
 from ghost_routes.documents.transforms import crop_to_page
+from ghost_routes.documents.vectors import vector_observations
 from ghost_routes.inference.extract import (
+    GEOMETRY_CLASSES,
     OUTPUT_SCHEMA,
     PROMPT_VERSION,
     VALIDATOR_VERSION,
@@ -35,18 +37,21 @@ from ghost_routes.synthetic.cases import all_cases
 from ghost_routes.synthetic.repairs import all_repair_cases
 from ghost_routes.verification.verifier import verify
 
-BASELINES = ("native_text", "raw_vlm", "full_pipeline", "manual_graph")
+BASELINES = ("native_text", "native_vector", "raw_vlm", "full_pipeline", "manual_graph")
+EXTRACTION_BASELINES = ("native_text", "native_vector", "raw_vlm", "full_pipeline")
 
 
 class ModelRequired(RuntimeError):
     pass
 
 
-def native_predictions(pdf: bytes) -> list[dict[str, Any]]:
+def native_predictions(pdf: bytes) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """(native text proposals, vector geometry proposals) for page 1. Neither uses a model."""
     cfg = get_settings()
     pages, _ = inspect_pdf(pdf, max_bytes=cfg.max_upload_bytes, max_pages=1)
-    return [{"cls": o["cls"], "label": o["label"], "bbox": list(o["bbox"]), "geometry": [], "phase_refs": o["phase_refs"],
+    text = [{"cls": o["cls"], "label": o["label"], "bbox": list(o["bbox"]), "geometry": [], "phase_refs": o["phase_refs"],
              "properties": o["properties"], "flags": []} for o in native_observations(pages[0].words)]
+    return text, vector_observations(pages[0].words, pages[0].strokes)["observations"]
 
 
 def _raw_items(content: str, c2p: Any) -> tuple[list[dict[str, Any]], int]:
@@ -72,7 +77,7 @@ def _raw_items(content: str, c2p: Any) -> tuple[list[dict[str, Any]], int]:
     return out, bad
 
 
-def model_predictions(pdf: bytes, client: OllamaClient, digest: str, cache: Path) -> dict[str, Any]:
+def model_predictions(pdf: bytes, client: OllamaClient, digest: str, cache: Path, *, cached_only: bool = False) -> dict[str, Any]:
     """One inference per crop (cached), read two ways: raw, and through the full validator."""
     cfg = get_settings()
     pages, _ = inspect_pdf(pdf, max_bytes=cfg.max_upload_bytes, max_pages=1)
@@ -95,6 +100,8 @@ def model_predictions(pdf: bytes, client: OllamaClient, digest: str, cache: Path
             rec = json.loads(hit.read_text())
             stats["cached"] += 1
         else:
+            if cached_only:
+                raise ModelRequired(f"missing cached response {key}; cached-only mode never runs inference")
             t0 = time.monotonic()
             res = client.chat_image(build_prompt(lines, w, h), png, OUTPUT_SCHEMA, options)
             rec = {"content": res.content, "done_reason": res.raw.get("done_reason"), "duration_ms": int((time.monotonic() - t0) * 1000)}
@@ -159,20 +166,42 @@ def _thresholds(report: dict[str, Any], manifest: dict[str, Any]) -> list[dict[s
             {"check": "full_pipeline held-out note recall", "target": tf["note_recall_min"], "value": g.get("note", {}).get("recall"),
              "met": (g.get("note", {}).get("recall") or 0) >= tf["note_recall_min"]},
         ]
+        for grp in ("path", "barrier"):
+            for metric in ("recall", "precision"):
+                key = f"{grp}_{metric}_min"
+                if key in tf:
+                    v = g.get(grp, {}).get(metric)
+                    out.append({"check": f"full_pipeline held-out {grp} {metric}", "target": tf[key], "value": v,
+                                "met": (v or 0) >= tf[key]})
+        if "geometry_median_error_m_max" in tf:
+            errs = [g.get(k, {}).get("median_error_m") for k in ("path", "barrier")]
+            worst = max((e for e in errs if e is not None), default=None)
+            out.append({"check": "full_pipeline held-out geometry median error (m, worse of path and barrier)",
+                        "target": tf["geometry_median_error_m_max"], "value": worst,
+                        "met": worst is not None and worst <= tf["geometry_median_error_m_max"]})
+        if "phase_assignment_min" in tf:
+            pa = fp["phase_assignment"]
+            v = round(pa["correct"] / pa["of"], 4) if pa["of"] else None
+            out.append({"check": "full_pipeline held-out phase assignment", "target": tf["phase_assignment_min"], "value": v,
+                        "met": v is not None and v >= tf["phase_assignment_min"]})
     return out
 
 
-def run(root: Path, *, live: bool) -> dict[str, Any]:
+def run(root: Path, *, live: bool, cached_only: bool = False) -> dict[str, Any]:
+    if cached_only and not live:
+        raise ValueError("--cached-only cannot be combined with --no-live")
     manifest, labels = M.load(root)
     pdfs = M.check_inputs(manifest)
     tol = Tolerances(**manifest["tolerances"])
     cfg = get_settings()
-    report: dict[str, Any] = {"schema": manifest["schema"], "started_at": datetime.now(UTC).isoformat(), "live_model": live,
+    report: dict[str, Any] = {"schema": manifest["schema"], "started_at": datetime.now(UTC).isoformat(),
+                              "live_model": live and not cached_only,
+                              "model_mode": "cached_only" if cached_only else "live_allowed" if live else "not_run",
                               "prompt_version": PROMPT_VERSION, "validator_version": VALIDATOR_VERSION, "baselines": {},
                               "per_sheet": {}, "real_plans": manifest["real_plans"]}
-    preds: dict[str, dict[str, list[dict[str, Any]]]] = {b: {} for b in ("native_text", "raw_vlm", "full_pipeline")}
+    preds: dict[str, dict[str, list[dict[str, Any]]]] = {b: {} for b in EXTRACTION_BASELINES}
     for s in manifest["sheets"]:
-        preds["native_text"][s["id"]] = native_predictions(pdfs[s["id"]])
+        preds["native_text"][s["id"]], preds["native_vector"][s["id"]] = native_predictions(pdfs[s["id"]])
     if live:
         client = OllamaClient(cfg.ollama_url, cfg.model, cfg.inference_timeout_s)
         st = client.status()
@@ -184,9 +213,13 @@ def run(root: Path, *, live: bool) -> dict[str, Any]:
         cache.mkdir(parents=True, exist_ok=True)
         stats = {}
         for s in manifest["sheets"]:
-            out = model_predictions(pdfs[s["id"]], client, st.digest, cache)
+            out = model_predictions(pdfs[s["id"]], client, st.digest, cache, cached_only=cached_only)
             preds["raw_vlm"][s["id"]] = out["raw_vlm"]
-            preds["full_pipeline"][s["id"]] = out["full_pipeline"]
+            # As stored by the app: model geometry is dropped for classes the vector strokes cover.
+            vec = preds["native_vector"][s["id"]]
+            covered = {p["cls"] for p in vec}
+            preds["full_pipeline"][s["id"]] = [p for p in out["full_pipeline"]
+                                               if not (p["cls"] in covered and p["cls"] in GEOMETRY_CLASSES)] + vec
             stats[s["id"]] = out["stats"]
         report["model_stats"] = stats
     for b, by_sheet in preds.items():
@@ -202,6 +235,8 @@ def run(root: Path, *, live: bool) -> dict[str, Any]:
         if b == "native_text":
             # Native text cannot propose geometry, and its rules have no notion of place names.
             report["baselines"][b]["unsupported"] = ["path", "barrier", "place_label"]
+        if b == "native_vector":
+            report["baselines"][b]["unsupported"] = ["phase_text", "note", "dimension", "place_label"]
     report["manual_graph"] = manual_graph()
     report["thresholds"] = _thresholds(report, manifest)
     report["finished_at"] = datetime.now(UTC).isoformat()
@@ -219,23 +254,27 @@ def write_report(report: dict[str, Any]) -> Path:
 
 def render_markdown(r: dict[str, Any]) -> str:
     lines = ["# Ghost Routes benchmark", "", f"Run {r['started_at']}; live model: {'yes' if r['live_model'] else 'no'}."]
+    if r.get("model_mode") == "cached_only":
+        lines.append("Cached model responses only; no inference was permitted in this run.")
     if r.get("model"):
         lines.append(f"Model {r['model']['name']} digest `{r['model']['digest']}`, prompt {r['prompt_version']}, validator {r['validator_version']}.")
     lines += ["", "## Extraction (synthetic, exact labels)", "",
-              "| Baseline | Split | Group | TP | FP | FN | Precision | Recall |", "| --- | --- | --- | --- | --- | --- | --- | --- |"]
-    for b in ("native_text", "raw_vlm", "full_pipeline"):
+              "| Baseline | Split | Group | TP | FP | FN | Precision | Recall | Median error (m) |",
+              "| --- | --- | --- | --- | --- | --- | --- | --- | --- |"]
+    for b in EXTRACTION_BASELINES:
         base = r["baselines"][b]
         if base.get("status") == "not run":
-            lines.append(f"| {b} | | not run: {base['reason']} | | | | | |")
+            lines.append(f"| {b} | | not run: {base['reason']} | | | | | | |")
             continue
         for part in ("dev", "held_out"):
             for g, v in base[part]["groups"].items():
                 unsup = g in base.get("unsupported", [])
                 lines.append(f"| {b} | {part} | {g}{' (unsupported)' if unsup else ''} | {v['tp']} | {v['fp']} | {v['fn']} | "
-                             f"{v['precision'] if v['precision'] is not None else 'n/a'} | {v['recall'] if v['recall'] is not None else 'n/a'} |")
+                             f"{v['precision'] if v['precision'] is not None else 'n/a'} | {v['recall'] if v['recall'] is not None else 'n/a'} | "
+                             f"{v['median_error_m'] if v.get('median_error_m') is not None else 'n/a'} |")
     lines += ["", "| Baseline | Split | Phase assignment | Dimension values | False connections | Flagged | Correction burden |",
               "| --- | --- | --- | --- | --- | --- | --- |"]
-    for b in ("native_text", "raw_vlm", "full_pipeline"):
+    for b in EXTRACTION_BASELINES:
         base = r["baselines"][b]
         if base.get("status") == "not run":
             continue

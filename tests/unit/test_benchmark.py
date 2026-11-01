@@ -111,3 +111,31 @@ def test_raw_reading_takes_model_output_at_face_value() -> None:
     assert dim["properties"]["value_m"] == pytest.approx(1.524)
     assert path["geometry"] == [pytest.approx([100, 50]), pytest.approx([120, 70])]
     assert _raw_items("not json", c2p) == ([], 1)
+
+
+def test_cached_only_never_calls_inference(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from PIL import Image
+
+    from ghost_routes.benchmark import run as runner
+    from ghost_routes.documents.pdf import PageInfo
+    from ghost_routes.inference.ollama import ChatResult, OllamaClient
+
+    monkeypatch.setattr(runner, "inspect_pdf", lambda *a, **kw: ([PageInfo(0, 8, 8, 0, [], {}, [])], {}))
+    monkeypatch.setattr(runner, "render_page", lambda *a: Image.new("RGB", (16, 16), "white"))
+    client = OllamaClient("http://unused", "test")
+
+    def forbidden(*args: object, **kwargs: object) -> None:
+        raise AssertionError("cached-only mode must never call inference")
+
+    monkeypatch.setattr(client, "chat_image", forbidden)
+    with pytest.raises(runner.ModelRequired, match="missing cached response"):
+        runner.model_predictions(b"pdf", client, "digest", tmp_path, cached_only=True)
+
+    monkeypatch.setattr(client, "chat_image", lambda *a: ChatResult('{"observations": []}', {}, 1))
+    runner.model_predictions(b"pdf", client, "digest", tmp_path)
+    monkeypatch.setattr(client, "chat_image", forbidden)
+    got = runner.model_predictions(b"pdf", client, "digest", tmp_path, cached_only=True)
+    assert got["stats"]["cached"] == got["stats"]["crops"] == 1
+    assert got["raw_vlm"] == got["full_pipeline"] == []
+    with pytest.raises(runner.ModelRequired, match="missing cached response"):
+        runner.model_predictions(b"pdf", client, "different-digest", tmp_path, cached_only=True)

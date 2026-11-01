@@ -43,7 +43,8 @@ class GroupScore:
         r = self.tp / (self.tp + self.fn) if self.tp + self.fn else None
         med = statistics.median(self.loc_errors_pt) if self.loc_errors_pt else None
         return {"tp": self.tp, "fp": self.fp, "fn": self.fn, "precision": _r(p), "recall": _r(r),
-                "median_error_m": _r(med * m_per_pt) if med is not None else None}
+                "median_error_m": _r(med * m_per_pt) if med is not None else None,
+                "errors_m": [round(e * m_per_pt, 4) for e in self.loc_errors_pt]}
 
 
 def _r(x: float | None) -> float | None:
@@ -198,16 +199,19 @@ def score_sheet(preds: list[dict[str, Any]], all_labels: list[dict[str, Any]], t
 def aggregate(sheets: list[dict[str, Any]], tol: Tolerances) -> dict[str, Any]:
     """Sum counts across sheets; rates are recomputed from the sums, never averaged."""
     groups: dict[str, dict[str, int]] = {}
+    errors: dict[str, list[float]] = {}
     for sh in sheets:
         for k, g in sh["groups"].items():
             acc = groups.setdefault(k, {"tp": 0, "fp": 0, "fn": 0})
             for f in ("tp", "fp", "fn"):
                 acc[f] += g[f]
+            errors.setdefault(k, []).extend(g.get("errors_m", []))
     out_groups = {}
     for k, g in sorted(groups.items()):
         p = g["tp"] / (g["tp"] + g["fp"]) if g["tp"] + g["fp"] else None
         r = g["tp"] / (g["tp"] + g["fn"]) if g["tp"] + g["fn"] else None
-        out_groups[k] = {**g, "precision": _r(p), "recall": _r(r)}
+        med = statistics.median(errors[k]) if errors.get(k) else None
+        out_groups[k] = {**g, "precision": _r(p), "recall": _r(r), "median_error_m": _r(med)}
 
     def total(path: tuple[str, str]) -> dict[str, int]:
         return {f: sum(sh[path[0]][f] for sh in sheets) for f in (path[1], "of")}

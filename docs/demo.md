@@ -14,7 +14,7 @@ Open `http://127.0.0.1:5177`, and enter a name under "Reviewing as". Decisions y
 
 ## The flagship story
 
-1. **Sources.** Projects P (stair repair) and Q (utility trench) each have a synthetic sheet. Open "Sheet ASH-P1" to see the native text observations over the rendered sheet. Use `j` and `k` to move between them, and `a` or `r` to accept or reject.
+1. **Sources.** Projects P (stair repair) and Q (utility trench) each have a synthetic sheet. Open "Sheet ASH-P1" to see native text and vector proposals over the rendered sheet. Filter provenance to "native text and vectors" and class to "path" to inspect the seven paths. Selecting one explains which legend stroke style it matches. Use `j` and `k` to move between proposals, and `a` or `r` to accept or reject. These proposals do not silently replace the scripted demonstration network.
 2. **Scenarios, then Ashgrove spring works, then Run analysis.** The analysis runs as a durable job. For "Halden Lab to Merrow Library, clear width >= 1.5 m":
    - P alone (08:00 to 09:00 UTC) and Q alone (10:00 to 11:00) are **Supported**.
    - Their overlap (09:00 to 10:00) **Needs verification**.
@@ -45,3 +45,5 @@ uv run ghost-routes bundle replay run.zip
 ## The real plan
 
 `uv run ghost-routes ingest` stores the University of Iowa sheet J.01 by hash. The sheet is used for reference only and is not redistributed. `uv run ghost-routes extract <sheet-id>` then runs the vision model on its six crops. Open the sheet in the studio to review the proposals. Each one shows its native-text anchor and the validator's flags. See the README for what the model did and did not find on this sheet.
+
+For sources ingested before vector extraction existed, run `uv run ghost-routes vectorize <sheet-id>` and then `uv run ghost-routes revalidate <sheet-id>`. Both use stored source/response bytes and do no inference. Revalidation updates only runs without review activity; reviewed proposals and decisions are preserved. On Iowa, vector extraction adds three fence candidates and does not recover a complete pedestrian network.

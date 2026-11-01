@@ -143,6 +143,16 @@ def extract(sheet_id: str, crops: str = typer.Option("", help="Comma-separated c
 
 
 @app.command()
+def vectorize(sheet_id: str) -> None:
+    """Add path and barrier proposals from the sheet's own vector strokes (no model)."""
+    from ghost_routes.persistence.db import transaction
+    from ghost_routes.services.documents import vectorize_sheet
+
+    with transaction() as s:
+        _out(vectorize_sheet(s, sheet_id))
+
+
+@app.command()
 def revalidate(sheet_id: str) -> None:
     """Re-derive model observations from stored raw responses with the current validator (no inference)."""
     from ghost_routes.persistence.db import transaction
@@ -248,9 +258,10 @@ def bundle_synthetic(out: Path = typer.Option(..., "--out", "-o"), case: str = t
 
 @app.command()
 def benchmark(live: bool = typer.Option(True, help="Run the model baselines (real inference). --no-live reports them as not run."),
+              cached_only: bool = typer.Option(False, help="Use cached model responses only; fail on a cache miss without inference."),
               root: Path = typer.Option(Path("benchmarks"), help="Directory holding manifest.json and labels/."),
               write_manifest: bool = typer.Option(False, help="Regenerate the tracked manifest and labels, then exit.")) -> None:
-    """Fixed-manifest benchmark: native text, raw VLM, full pipeline and hand-built graph baselines."""
+    """Fixed-manifest benchmark: native text/vector, raw VLM, full pipeline and hand-built graph baselines."""
     from ghost_routes.benchmark import manifest as bm
     from ghost_routes.benchmark.run import ModelRequired, run, write_report
 
@@ -259,7 +270,9 @@ def benchmark(live: bool = typer.Option(True, help="Run the model baselines (rea
         return
     logging.basicConfig(level=logging.WARNING)
     try:
-        report = run(root, live=live)
+        report = run(root, live=live, cached_only=cached_only)
+    except ValueError as exc:
+        raise typer.BadParameter(str(exc)) from exc
     except ModelRequired as exc:
         typer.echo(str(exc), err=True)
         raise typer.Exit(3) from exc
