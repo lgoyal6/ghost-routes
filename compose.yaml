@@ -1,0 +1,26 @@
+# Local services for Ghost Routes. Only PostgreSQL/PostGIS is containerized;
+# the API, worker and web dev server run natively against it, and Ollama runs
+# natively on the host. Bound to loopback only.
+name: ghost-routes
+
+services:
+  db:
+    # Multi-arch PostGIS build (PostgreSQL 17.6, PostGIS 3.5) pinned by digest.
+    # The official postgis/postgis image publishes amd64 only.
+    image: imresamu/postgis@sha256:35fe7dceda62bfe7d2965b0ba78d915ff9f901b5e0466d633ecc58421b5b5210
+    environment:
+      POSTGRES_USER: ${GHOST_ROUTES_DB_USER:-ghost_routes}
+      POSTGRES_PASSWORD: ${GHOST_ROUTES_DB_PASSWORD:?run make setup to generate .env}
+      POSTGRES_DB: ${GHOST_ROUTES_DB_NAME:-ghost_routes}
+    ports:
+      - "127.0.0.1:${GHOST_ROUTES_DB_PORT:-55432}:5432"
+    volumes:
+      - ghost_routes_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  ghost_routes_pg:
